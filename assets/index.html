@@ -16,6 +16,10 @@
         margin: 0;
         box-sizing: border-box;
         font-family: "Poppins", sans-serif;
+        
+      }
+      body{
+        background-color: rgb(255 255 255)
       }
       .headermain {
         display: flex;
@@ -45,7 +49,7 @@
       }
       .herosec {
         height: 70vh;
-        background: url("/Salon-Frontend/images/hero-img.jpg");
+        background: url("/images/hero-img.jpg");
         background-size: contain;
         background-repeat: no-repeat;
         display: flex;
@@ -53,9 +57,12 @@
         align-items: center;
       }
       .aboutsec {
-        margin: 50px 100px;
-        background-color: aqua;
+        display: flex;
+        margin: 30px auto;
+        /* background-color: aqua; */
         height: 100vh;
+        width: 90vw;
+        gap: 26px;
       }
       footer {
         background-color: #1c1c1c;
@@ -107,13 +114,36 @@
       .newsletter button:hover {
         background-color: #b08b2e;
       }
+      .aboutsecleft{
+        width: 45%;
+        height: 80%;
+        background: url("/images/about-img.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius: 12px;
+        }
+        .aboutsecright{
+            width: 55%;
+            height: 50%;
+            padding: 20px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            /* background-color: #d4af37; */
+            background-color: rgb(255, 244, 244);
+            border-radius: 12px;
+      }
+      .aboutsecright h3,p{
+        padding-bottom: 6px;
+      }
     </style>
   </head>
   <body>
     <header>
       <div class="headermain">
         <div class="headerleft">
-          <img src="/Salon-Frontend/images/logo.png" alt="" />
+          <img src="/images/logo.png" alt="" />
         </div>
         <div class="headerright">
           <ul>
@@ -121,7 +151,7 @@
             <li>Service</li>
             <li>Contact</li>
             <li>Book Appointment</li>
-            <li><a href="admin.html">About</a></li>
+            <li><a href="admin.html">admin</a></li>
           </ul>
         </div>
       </div>
@@ -139,7 +169,17 @@
       </div>
     </section>
     <section>
-      <div class="aboutsec">sdsd</div>
+      <div class="aboutsec">
+        <div class="aboutsecleft">
+            
+        </div>
+        <div class="aboutsecright">
+            <h3>ABOUT US</h3>
+            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa maxime magni a expedita. Magni optio doloribus pariatur ullam magnam aliquam voluptate ab impedit numquam praesentium.</p>
+        </div>
+
+      </div>
     </section>
     <footer>
       <div class="footer-container">
