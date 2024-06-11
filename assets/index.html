@@ -1,97 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Men Salon</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        *{
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-        .headermain{
-            display: flex;
-            /* background-color: aqua; */
-            width: 100vw;
-            height: 100px;
-            justify-content: space-evenly;
-            align-items: center;
-        }
-        .headerleft{
-            /* width: 30vw; */
-            display: flex;
-            justify-content: center;
-            text-align: center;
-        }
-        .headerright{
-            /* width: 60vw; */
-            display: flex;
-            justify-content: center;
-            text-align: center;
-        }
-        .headerright ul li{
-            list-style-type: none;
-
-        }
-        .headerright ul{
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            text-align: center;
-        }
-        .herosec{
-            height: 70vh;
-            background: url("/images/hero-img.jpg");
-            background-size: contain;
-            background-repeat: no-repeat;
-            display: flex;
-            justify-content:center;
-            align-items: center;
-        }
-        .aboutsec{
-            margin: 50px 100px;
-            background-color: aqua;
-            height: 100vh;
-
-        }
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+      .headermain {
+        display: flex;
+        width: 100vw;
+        height: 100px;
+        justify-content: space-evenly;
+        align-items: center;
+      }
+      .headerleft {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+      }
+      .headerright {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+      }
+      .headerright ul li {
+        list-style-type: none;
+      }
+      .headerright ul {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        text-align: center;
+      }
+      .herosec {
+        height: 70vh;
+        background: url("/Salon-Frontend/images/hero-img.jpg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .aboutsec {
+        margin: 50px 100px;
+        background-color: aqua;
+        height: 100vh;
+      }
+      footer {
+        background-color: #1c1c1c;
+        color: #fff;
+        padding: 40px 0;
+        text-align: left;
+      }
+      .footer-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin: 0 auto;
+        width: 80%;
+      }
+      .footer-column {
+        flex: 1;
+        margin: 20px;
+        min-width: 200px;
+      }
+      .footer-column h3 {
+        margin-bottom: 20px;
+      }
+      .footer-column p,
+      .footer-column a {
+        color: #fff;
+        text-decoration: none;
+        line-height: 1.6;
+      }
+      .footer-column a:hover {
+        text-decoration: underline;
+      }
+      .newsletter input[type="email"] {
+        padding: 10px;
+        width: calc(100% - 100px);
+        border: none;
+        border-radius: 5px 5px;
+        margin-top: 5px;
+      }
+      .newsletter button {
+        padding: 10px;
+        width: 100px;
+        border: none;
+        border-radius: 5px;
+        background-color: #d4af37;
+        color: #fff;
+        cursor: pointer;
+        margin-top: 5px;
+      }
+      .newsletter button:hover {
+        background-color: #b08b2e;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <div class="headermain">
-            <div class="headerleft">
-                <img src="/images/logo.png" alt="">
-            </div>
-            <div class="headerright">
-                <ul>
-                    <li>home</li>
-                    <li>Service</li>
-                    <li>Contact</li>
-                    <li>Book Appointment</li>
-                    <li>Admin</li>
-                </ul>
-            </div>
-    </div>
+      <div class="headermain">
+        <div class="headerleft">
+          <img src="/Salon-Frontend/images/logo.png" alt="" />
+        </div>
+        <div class="headerright">
+          <ul>
+            <li>Home</li>
+            <li>Service</li>
+            <li>Contact</li>
+            <li>Book Appointment</li>
+            <li><a href="admin.html">About</a></li>
+          </ul>
+        </div>
+      </div>
     </header>
     <section>
-        <div class="herosec">
-            <div class="herosecPost">
-                <h1 style="text-align: center;">Men's Salon Management <br> System</h1>
-                <p>Your Type, Your Style & your color</p>
-                <button class="btn">Make an Appointment</button>
-            </div>
+      <div class="herosec">
+        <div class="herosecPost">
+          <h1 style="text-align: center">
+            Men's Salon Management <br />
+            System
+          </h1>
+          <p>Your Type, Your Style & your color</p>
+          <button class="btn">Make an Appointment</button>
         </div>
+      </div>
     </section>
     <section>
-        <div class="aboutsec">
-            sdsd
-        </div>
+      <div class="aboutsec">sdsd</div>
     </section>
-</body>
+    <footer>
+      <div class="footer-container">
+        <div class="footer-column">
+          <h3>SALON ADDRESS</h3>
+          <p>890, Sector 62, Gyan Sarovar, GAIL, Noida (Delhi/NCR)</p>
+          <p>+7896541236</p>
+          <p>info@gmail.com</p>
+        </div>
+        <div class="footer-column">
+          <h3>SOCIAL FEED</h3>
+          <p><a href="#">Facebook</a></p>
+          <p><a href="#">Twitter</a></p>
+          <p><a href="#">Google Plus</a></p>
+          <p><a href="#">LinkedIn</a></p>
+          <p><a href="#">YouTube</a></p>
+        </div>
+        <div class="footer-column newsletter">
+          <h3>NEWSLETTERS</h3>
+          <p>
+            Enter your email address to receive new patient information and
+            other useful information right to your inbox.
+          </p>
+          <form>
+            <input type="email" placeholder="Enter your email address" />
+            <button type="submit">SUBSCRIBE</button>
+          </form>
+        </div>
+      </div>
+      <div style="text-align: center; padding-top: 20px">
+        <p>MEN SALON MANAGEMENT SYSTEM</p>
+      </div>
+    </footer>
+  </body>
 </html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+    />
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+      body {
+        display: flex;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .sidebar {
+        width: 250px;
+        background-color: #3f48cc;
+        color: #fff;
+        padding-top: 20px;
+        position: fixed;
+        height: 100%;
+      }
+      .sidebar h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+      }
+      .sidebar ul li {
+        padding: 10px 20px;
+        cursor: pointer;
+      }
+      .sidebar ul li:hover {
+        background-color: #575fcf;
+      }
+      .sidebar ul li i {
+        margin-right: 10px;
+      }
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        width: calc(100% - 250px);
+      }
+      .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .card {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+      }
+      .card h3 {
+        margin-bottom: 10px;
+      }
+      .card p {
+        font-size: 24px;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h1>MSMS</h1>
+      <ul>
+        <li onclick="showDashboard()">
+          <i class="fas fa-tachometer-alt"></i>Dashboard
+        </li>
+        <li onclick="showServices()">
+          <i class="fas fa-concierge-bell"></i>Services
+        </li>
+        <li onclick="showPages()"><i class="fas fa-file-alt"></i>Pages</li>
+        <li onclick="showAppointments()">
+          <i class="fas fa-calendar-check"></i>Appointment
+        </li>
+        <li onclick="showSubscribers()">
+          <i class="fas fa-users"></i>Subscriber
+        </li>
+        <li onclick="showAddCustomer()">
+          <i class="fas fa-user-plus"></i>Add Customer
+        </li>
+        <li onclick="showCustomerList()">
+          <i class="fas fa-list"></i>Customer List
+        </li>
+        <li onclick="showInvoices()">
+          <i class="fas fa-file-invoice"></i>Invoices
+        </li>
+      </ul>
+    </div>
+    <div class="main-content" id="main-content">
+      <!-- Default content will be Dashboard -->
+      <div class="card-container" id="dashboard">
+        <div class="card">
+          <h3>Total Customer</h3>
+          <p>4</p>
+        </div>
+        <div class="card">
+          <h3>Total Appointment</h3>
+          <p>9</p>
+        </div>
+        <div class="card">
+          <h3>Accepted Apt</h3>
+          <p>5</p>
+        </div>
+        <div class="card">
+          <h3>Rejected Apt</h3>
+          <p>5</p>
+        </div>
+        <div class="card">
+          <h3>Total Services</h3>
+          <p>17</p>
+        </div>
+        <div class="card">
+          <h3>Today Sales</h3>
+          <p>0</p>
+        </div>
+        <div class="card">
+          <h3>Yesterday Sales</h3>
+          <p>0</p>
+        </div>
+        <div class="card">
+          <h3>Last 7 Days Sales</h3>
+          <p>0</p>
+        </div>
+        <div class="card">
+          <h3>Total Sales</h3>
+          <p>2650</p>
+        </div>
+      </div>
+      <div id="services" style="display: none">
+        <h2>Services</h2>
+        <p>Here are all the services...</p>
+        <!-- Add your service content here -->
+      </div>
+      <div id="pages" style="display: none">
+        <h2>Pages</h2>
+        <p>Here are all the pages...</p>
+        <!-- Add your pages content here -->
+      </div>
+      <div id="appointments" style="display: none">
+        <h2>Appointments</h2>
+        <p>Here are all the appointments...</p>
+        <!-- Add your appointments content here -->
+      </div>
+      <div id="subscribers" style="display: none">
+        <h2>Subscribers</h2>
+        <p>Here are all the subscribers...</p>
+        <!-- Add your subscribers content here -->
+      </div>
+      <div id="addCustomer" style="display: none">
+        <h2>Add Customer</h2>
+        <p>Form to add a customer...</p>
+        <!-- Add your add customer content here -->
+      </div>
+      <div id="customerList" style="display: none">
+        <h2>Customer List</h2>
+        <p>Here is the customer list...</p>
+        <!-- Add your customer list content here -->
+      </div>
+      <div id="invoices" style="display: none">
+        <h2>Invoices</h2>
+        <p>Here are all the invoices...</p>
+        <!-- Add your invoices content here -->
+      </div>
+    </div>
+    <script>
+      function hideAllSections() {
+        document.getElementById("dashboard").style.display = "none";
+        document.getElementById("services").style.display = "none";
+        document.getElementById("pages").style.display = "none";
+        document.getElementById("appointments").style.display = "none";
+        document.getElementById("subscribers").style.display = "none";
+        document.getElementById("addCustomer").style.display = "none";
+        document.getElementById("customerList").style.display = "none";
+        document.getElementById("invoices").style.display = "none";
+      }
+
+      function showDashboard() {
+        hideAllSections();
+        document.getElementById("dashboard").style.display = "flex";
+      }
+
+      function showServices() {
+        hideAllSections();
+        document.getElementById("services").style.display = "block";
+      }
+
+      function showPages() {
+        hideAllSections();
+        document.getElementById("pages").style.display = "block";
+      }
+
+      function showAppointments() {
+        hideAllSections();
+        document.getElementById("appointments").style.display = "block";
+      }
+
+      function showSubscribers() {
+        hideAllSections();
+        document.getElementById("subscribers").style.display = "block";
+      }
+
+      function showAddCustomer() {
+        hideAllSections();
+        document.getElementById("addCustomer").style.display = "block";
+      }
+
+      function showCustomerList() {
+        hideAllSections();
+        document.getElementById("customerList").style.display = "block";
+      }
+
+      function showInvoices() {
+        hideAllSections();
+        document.getElementById("invoices").style.display = "block";
+      }
+
+      // Show dashboard by default
+      showDashboard();
+    </script>
+  </body>
+</html>
