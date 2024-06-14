@@ -75,13 +75,31 @@
     <div class="login-container">
       <h1>SignIn Page</h1>
       <p>Welcome back to MSMS AdminPanel!</p>
-      <form>
-        <input type="text" placeholder="admin" />
-        <input type="password" placeholder="••••••••" />
-        <button type="submit"><a href="/assets/admin_dashboard.html">Sign In</a></button>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="admin" />
+        <input type="password" id="password" placeholder="••••••••" />
+        <button type="submit" id="submit">Sign In</button>
       </form>
       <a href="index.html">Back to Home</a>
       <a href="#">forgot password?</a>
     </div>
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        const response = await fetch(`http://localhost:3000/api/data/${username}/${password}`);
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          window.location.href = 'admin_dashboard.html';
+        } else {
+          alert('Invalid username or password');
+        }
+      });
+    </script>
   </body>
 </html>
