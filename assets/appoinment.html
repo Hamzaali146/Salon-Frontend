@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Men Salon Management System || Appointments Form</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i%7cMontserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <!-- Style -->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+</head>
+
+<body>
+    <div class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="page-caption">
+                        <h2 class="page-title">Book Appointment</h2>
+                        <div class="page-breadcrumb">
+                            <ol class="breadcrumb">
+                                <li><a href="index.html">Home</a></li>
+                                <li class="active">Book Appointment</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <h1>Appointment Form</h1>
+                            <p> Book your appointment to save salon rush.</p>
+                            <form id="appointmentForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="control-label" for="name">Name</label>
+                                        <input type="text" class="form-control" id="name" placeholder="Name" name="name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="control-label" for="phone">Phone</label>
+                                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" required maxlength="10" pattern="[0-9]+">
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <label class="control-label" for="email">Email</label>
+                                         <input type="email" class="form-control" id="email" placeholder="Email" name="email" required>
+                                    </div>
+                                
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label" for="services" style="font-size: 18px;">Available Services</label>
+                                            <div id="services" class="checkbox-container">
+                                                
+                                                <!-- Checkboxes will be populated dynamically here -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label" for="">Select Barber</label>
+                                            <select class="form-control" name="employee" id="employee" onchange="fetchTimeslots()">
+                                                <option value="0">Please select</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label" for="adate">Appointment Date</label>
+                                            <input type="date" class="form-control" name="adate" id="inputdate" onchange="fetchTimeslots()">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label" for="atime">Appointment Time</label>
+                                            <select class="form-control" name="atime" id="atime" >
+                                                <option value="0">Please select</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <button type="submit" id="submit" class="btn btn-default">Book</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div id="responseMessage"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/menumaker.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+    <script src="js/sticky-header.js"></script>
+    <script type="text/javascript">
+        $(function() {
+    var dtToday = new Date();
+
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+        day = '0' + day.toString();
+    var maxDate = year + '-' + month + '-' + day;
+    $('#inputdate').attr('min', maxDate);
+});
+
+document.getElementById('appointmentForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const selectedServices = [];
+    const checkboxes = document.querySelectorAll('#services input[name="selectedServices"]:checked');
+
+    checkboxes.forEach((checkbox) => {
+        selectedServices.push(checkbox.value);
+    });
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const adate = document.getElementById('inputdate').value;
+    const atime = document.getElementById('atime').value;
+    const employeeid = document.getElementById('employee').value;
+    const phone = document.getElementById('phone').value;
+    const Remarks = '';
+
+    try {
+        const response = await fetch('http://localhost:3000/api/AddAppointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, employeeid, adate, atime, email, phone, Remarks, selectedServices })
+        });
+
+        const result = await response.json();
+
+        const responseMessage = document.getElementById('responseMessage');
+        if (response.ok) {
+            responseMessage.innerHTML = `<p>Appointment booked successfully. Your appointment number is ${result.appointmentID}</p>`;
+            setTimeout(() => {
+                window.location.href = 'thankyou.html?aptno='+result.appointmentID;
+            }, 10);
+        } else {
+            responseMessage.innerHTML = `<p>Something went wrong. Please try again.</p>`;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        const responseMessage = document.getElementById('responseMessage');
+        responseMessage.innerHTML = `<p>Something went wrong. Please try again.</p>`;
+    }
+});
+
+        function fetchTimeslots() {
+            const employeeid = document.getElementById('employee').value;
+            const appointmentdate = document.getElementById('inputdate').value;
+            const timeslotsSelect = document.getElementById('atime');
+            if(employeeid==null || employeeid==0 || appointmentdate == "" || appointmentdate==null) {
+                timeslotsSelect.innerHTML = '<option value="0">Select Time Slot</option>';
+                return false;
+            }
+
+            fetch(`http://localhost:3000/api/fetchtimeslots?AptDate=${appointmentdate}&EmployeeID=${employeeid}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(timeslots => {
+                    
+                    
+                    timeslotsSelect.innerHTML = '<option value="0">Select Time Slot</option>';
+                    
+
+                    timeslots.forEach(timeslot => {
+                        const option = document.createElement('option');
+                        option.value = timeslot.ID;
+                        option.textContent = timeslot.TimeSlots;
+                        timeslotsSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    alert("Function ERROR: " + error);
+                    console.error('Error fetching timeslots:', error);
+                });
+        }
+
+        function fetchServicesNames() {
+        fetch('http://localhost:3000/api/fetchServiceNames')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(services => {
+                const servicesContainer = document.getElementById('services');
+                servicesContainer.innerHTML = ''; // Clear existing checkboxes
+
+                services.forEach(service => {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'selectedServices';
+                    checkbox.value = service.ID;
+                    checkbox.style.marginLeft = '50px';
+                    
+                    const label = document.createElement('label');
+                    label.textContent = service.ServiceName;
+                    label.style.marginLeft = '10px';
+                    const br = document.createElement('br');
+
+                    servicesContainer.appendChild(checkbox);
+                    servicesContainer.appendChild(label);
+                    servicesContainer.appendChild(br);
+                });
+            })
+            .catch(error => {
+                alert("Function ERROR: " + error);
+                console.error('Error fetching services:', error);
+            });
+    }
+
+        function fetchEmployee() {
+            fetch('http://localhost:3000/api/barbers')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(rows => {
+                    const dropdown = document.getElementById('employee');
+                    rows.forEach(row => {
+                        const option = document.createElement('option');
+                        option.value = row.ID;
+                        option.textContent = row.EmpName;
+                        dropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    alert("Function ERROR: " + error);
+                    console.error('Error fetching timeslots:', error);
+                });
+        }
+        // Call fetchTimeslots when the page loads
+
+
+        $(document).ready(function() {
+            fetchServicesNames();
+            fetchEmployee();
+        });
+    </script>
+</body>
+
+</html>
