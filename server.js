@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql');
 const path = require('path');
 const cors = require('cors');
+const { createBrotliCompress } = require('zlib');
 const app = express();
 const port = 3000;
 
@@ -169,9 +170,24 @@ app.get('/api/AppointmentDetails', (req, res) => {
   });
 });
 
+app.post('/api/AddService', (req, res) => {
+  const { serviceName, serviceDescription, Cost,CreationDate } = req.body;
 
+  // Validate the input
+  if (!serviceName || !serviceDescription || !Cost) {
+      return res.status(400).json({ error: 'Service Name, Service Description, and Cost are all required' });
+  }
 
+  const serviceQuery = 'INSERT INTO tblservices (ServiceName, Description, Cost, CreationDate) VALUES (?, ?, ?, now())';
+  db.query(serviceQuery, [serviceName, serviceDescription, Cost,CreationDate], (err, result) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          return res.status(500).json({ error: err.message });
+      }
 
+      res.status(200).json({ message: 'Service added successfully' });
+  });
+});
 
 // Start the server
 app.listen(port, () => {
