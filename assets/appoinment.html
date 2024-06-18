@@ -198,8 +198,6 @@ document.getElementById('appointmentForm').addEventListener('submit', async func
                     
                     
                     timeslotsSelect.innerHTML = '<option value="0">Select Time Slot</option>';
-                    
-
                     timeslots.forEach(timeslot => {
                         const option = document.createElement('option');
                         option.value = timeslot.ID;

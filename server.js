@@ -128,6 +128,7 @@ app.post('/api/AddAppointments', (req, res) => {
   });
 });
 });
+
 app.get('/api/AppointmentDetails', (req, res) => {
   const { aptno } = req.query;
 
@@ -167,6 +168,9 @@ app.get('/api/AppointmentDetails', (req, res) => {
     res.json(results); // Send the results directly
   });
 });
+
+
+
 
 
 // Start the server
