@@ -107,48 +107,81 @@
     margin-left:420px ;
     margin-top: 100px;
     
-}
+    }
 
-.contact-form h2 {
-    margin: 0 0 20px;
-    text-align: center;
-}
+    .contact-form h2 {
+        margin: 0 0 20px;
+        text-align: center;
+    }
 
-.contact-form input,
-.contact-form textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-    font-size: 14px;
-}
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        font-size: 14px;
+    }
 
-.contact-form input::placeholder,
-.contact-form textarea::placeholder {
-    color: #999;
-}
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+        color: #999;
+    }
 
-.contact-form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #ff4081;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+    .contact-form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #ff4081;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
 
-.contact-form button:hover {
-    background-color: #e73370;
-}
+    .contact-form button:hover {
+        background-color: #e73370;
+    }
 
-#addServices{
-  height: 800px;
-}
+    #addServices{
+      height: 800px;
+    }
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 18px;
+        text-align: left;
+    }
+
+    thead tr {
+        background-color: #6a11cb;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    th, td {
+        padding: 12px 15px;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+    }
+
   </style>
 </head>
 <body>
@@ -228,18 +261,44 @@
       <div id="addServices" style="display: none">
         <div class="contact-form">
           <h2>Add Service</h2>
-            <!-- Remove <form> tags -->
-            <input type="text" name="name" placeholder=" Service Name" required id="service-name">
-            <input type="text" name="cost" placeholder="Cost" required id="service-cost">
-            <textarea name="Description" placeholder="Description" required id="service-description"></textarea>
-            <!-- Add an onclick event to call addservice() -->
-      <button onclick="addservice()">ADD</button>
+          <input type="text" name="name" placeholder=" Service Name" required id="service-name">
+          <input type="text" name="cost" placeholder="Cost" required id="service-cost">
+          <textarea name="Description" placeholder="Description" required id="service-description"></textarea>
+          <button onclick="addservice()">ADD</button>
       </div>
       </div>
       </div>
-      <div id="manageServices" style="display: none">
+      <div id="manageServices" style="display: none" >
+        <table>
+          <thead>
+            <tr>
+                <th>Number</th>
+                <th>Name</th>
+                <th>Cost</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+          <tbody id="serviceTableBody">
+            <!-- Dynamic content will be added here -->
+          </tbody>
+        </table>
         
+      
       </div>
+
+      <div id="editService" style="display: none">
+        <div class="contact-form">
+          <h2>Edit Service</h2>
+          <input type="text" name="name" required id="ser_name">
+          <input type="text" name="cost" required id="ser_cost"  >
+          <textarea name="Description" required id="ser_desc""></textarea>
+          <input type="hidden" id="ser_id">
+          <button onclick="update_service()">UPDATE</button>
+        </div>
+      </div>
+
+      
     </div>
     <div id="pages" style="display: none">
       <h2>Pages</h2>
@@ -338,6 +397,7 @@
     function showManageServices() {
       hideServiceSubsections();
       document.getElementById("manageServices").style.display = "block";
+      fetchServices();
     }
 
     // Show dashboard by default
@@ -346,31 +406,144 @@
 
   <script>
     async function addservice() {
-    const serviceName = document.getElementById('service-name').value;
-    const serviceDescription = document.getElementById('service-description').value;
-    const Cost = document.getElementById('service-cost').value;
-    const CreationDate = '';
+      const serviceName = document.getElementById('service-name').value;
+      const serviceDescription = document.getElementById('service-description').value;
+      const Cost = document.getElementById('service-cost').value;
+      const CreationDate = '';
 
-    try {
-        const response = await fetch('http://localhost:3000/api/AddService', {
-            method: 'POST',
+      try {
+          const response = await fetch('http://localhost:3000/api/AddService', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ serviceName, serviceDescription, Cost, CreationDate })
+          });
+
+          if (response.ok) {
+              alert("SERVICE ADDED")
+              // Handle success case
+          } else {
+            
+              // Handle error case
+          }
+      } catch (error) {
+          console.error('API error:', error);
+      }
+    } 
+
+  async function deleteService(id) {
+      const response = await fetch(`http://localhost:3000/api/DeleteService/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      fetchServices();
+}
+  
+  
+    async function fetchServices() {
+      try {
+        const response = await fetch('http://localhost:3000/api/fetchServiceNames');
+        const services = await response.json();
+
+        const tableBody = document.getElementById('serviceTableBody');
+        tableBody.innerHTML = ''; // Clear existing table rows
+
+          services.forEach((service, index) => {
+          const row = document.createElement('tr');
+
+          const cellIndex = document.createElement('td');
+          cellIndex.textContent = service.ID;
+          row.appendChild(cellIndex);
+
+          const cellName = document.createElement('td');
+          cellName.textContent = service.ServiceName;
+          row.appendChild(cellName);
+
+          const cellPrice = document.createElement('td');
+          cellPrice.textContent = service.Cost;
+          row.appendChild(cellPrice);
+
+          
+
+          const cellAction = document.createElement('td');
+          const actionDiv = document.createElement('div');
+          actionDiv.classList.add('action-buttons');
+
+          const editIcon = document.createElement('i');
+          editIcon.classList.add('fas', 'fa-edit');
+          editIcon.setAttribute('title', 'Edit');
+          editIcon.style.marginRight = '20px' 
+          editIcon.style.cursor = 'pointer'
+          editIcon.onclick = () => editService(service.ID,service.ServiceName,service.Cost,service.Description);
+          
+          const deleteIcon = document.createElement('i');
+          deleteIcon.classList.add('fas', 'fa-trash');
+          deleteIcon.setAttribute('title', 'Delete');
+          deleteIcon.style.cursor = 'pointer'
+          deleteIcon.onclick = () => deleteService(service.ID);
+         
+          actionDiv.appendChild(editIcon);
+          actionDiv.appendChild(deleteIcon);
+
+          cellAction.appendChild(actionDiv);
+          row.appendChild(cellAction);
+
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        
+        console.error('Error fetching services:', error);
+      }
+    }
+
+    
+    
+    function editService(service_id,service_name,service_cost,service_description) {
+      hideServiceSubsections();
+      const serviceNameElement = document.getElementById('ser_name')
+      const serviceCostElement = document.getElementById('ser_cost');
+      const serviceDescriptionElement = document.getElementById('ser_desc');
+      const serviceIdElement = document.getElementById('ser_id');
+      document.getElementById('editService').style.display = 'block';
+
+      serviceNameElement.value = service_name;
+      serviceCostElement.value = service_cost;
+      serviceDescriptionElement.value = service_description;
+      serviceIdElement.value = service_id;
+
+    }
+
+    function update_service(){
+      const updatedService = {
+        name: document.getElementById('ser_name').value,
+        cost: document.getElementById('ser_cost').value,
+        description: document.getElementById('ser_desc').value,
+        id: document.getElementById('ser_id').value,
+      };
+
+      // Send updated service data to the server
+        fetch('http://localhost:3000/api/updateService', {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ serviceName, serviceDescription, Cost, CreationDate })
-        });
-
-        if (response.ok) {
-            alert("SERVICE ADDED")
-            // Handle success case
-        } else {
-          
-            // Handle error case
-        }
-    } catch (error) {
-        console.error('API error:', error);
+            body: JSON.stringify(updatedService)
+        })
+        hideServiceSubsections(); // Hide the edit form
+        document.getElementById("manageServices").style.display = "block"; // Show the manage services section
+        fetchServices(); // Fetch updated services
+        document.getElementById("editService").style.display = "none";
+        alert('Service updated successfully');
     }
-}
+    
+        
+    
+  
+    
+  </script>
 
 
   </script>

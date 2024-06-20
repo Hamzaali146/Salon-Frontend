@@ -189,6 +189,40 @@ app.post('/api/AddService', (req, res) => {
   });
 });
 
+app.delete('/api/DeleteService/:serviceID', (req, res) => {
+  const { serviceID } = req.params;
+  
+  const deleteBillingQuery = 'DELETE FROM tblbilling WHERE ServiceID = ?';
+  db.query(deleteBillingQuery, [serviceID], (billingErr, billingResult) => {
+    if (billingErr) {
+      console.error('Error deleting related billing entries:', billingErr);
+      return res.status(500).json({ error: billingErr.message });
+    }
+
+    const Query = 'DELETE FROM tblservices WHERE ID = ?';
+    db.query(Query, [serviceID], (err, result) => {
+      if (err) {
+        console.error('API ERROR:', err);
+        return res.status(500).json({ error: err.message });
+      }
+      // Also delete related invoice and billing entries if needed
+      res.status(200).json({ message: 'Service deleted successfully' });
+    });
+  });
+});
+
+app.put('/api/updateService', (req, res) => {
+  const {name, cost, description, id} = req.body;
+  const serviceQuery = 'update tblservices set ServiceName = ?, Cost = ?, Description = ? where ID = ?';
+  db.query(serviceQuery, [ name, cost, description, id], (err, result) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          return res.status(500).json({ error: err.message });
+      }
+      res.status(200).json({ message: 'Service updated successfully' });
+  });
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
