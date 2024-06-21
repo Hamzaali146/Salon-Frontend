@@ -54,7 +54,7 @@ app.get('/api/fetchtimeslots', (req, res) => {
 });
 
 app.get('/api/fetchServiceNames', (req, res) => {
-  const query = 'SELECT * FROM tblservices';
+  const query = 'SELECT * FROM tblservices where IsActive = True';
   db.query(query, (err, results) => {
       if (err) {
           console.error('API ERROR:', err);
@@ -171,15 +171,15 @@ app.get('/api/AppointmentDetails', (req, res) => {
 });
 
 app.post('/api/AddService', (req, res) => {
-  const { serviceName, serviceDescription, Cost,CreationDate } = req.body;
+  const { serviceName, serviceDescription, Cost,CreationDate,service_stat } = req.body;
 
   // Validate the input
   if (!serviceName || !serviceDescription || !Cost) {
       return res.status(400).json({ error: 'Service Name, Service Description, and Cost are all required' });
   }
 
-  const serviceQuery = 'INSERT INTO tblservices (ServiceName, Description, Cost, CreationDate) VALUES (?, ?, ?, now())';
-  db.query(serviceQuery, [serviceName, serviceDescription, Cost,CreationDate], (err, result) => {
+  const serviceQuery = 'INSERT INTO tblservices (ServiceName, Description, Cost, CreationDate,IsActive) VALUES (?, ?, ?, now(),true)';
+  db.query(serviceQuery, [serviceName, serviceDescription, Cost,CreationDate,service_stat], (err, result) => {
       if (err) {
           console.error('API ERROR:', err);
           return res.status(500).json({ error: err.message });
@@ -189,17 +189,10 @@ app.post('/api/AddService', (req, res) => {
   });
 });
 
-app.delete('/api/DeleteService/:serviceID', (req, res) => {
+app.put('/api/DeleteService/:serviceID', (req, res) => {
   const { serviceID } = req.params;
   
-  const deleteBillingQuery = 'DELETE FROM tblbilling WHERE ServiceID = ?';
-  db.query(deleteBillingQuery, [serviceID], (billingErr, billingResult) => {
-    if (billingErr) {
-      console.error('Error deleting related billing entries:', billingErr);
-      return res.status(500).json({ error: billingErr.message });
-    }
-
-    const Query = 'DELETE FROM tblservices WHERE ID = ?';
+    const Query = 'update tblservices set IsActive = false where ID = ?';
     db.query(Query, [serviceID], (err, result) => {
       if (err) {
         console.error('API ERROR:', err);
@@ -209,7 +202,7 @@ app.delete('/api/DeleteService/:serviceID', (req, res) => {
       res.status(200).json({ message: 'Service deleted successfully' });
     });
   });
-});
+
 
 app.put('/api/updateService', (req, res) => {
   const {name, cost, description, id} = req.body;

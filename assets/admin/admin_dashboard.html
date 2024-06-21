@@ -349,6 +349,7 @@
     }
 
     function showDashboard() {
+      hideServiceSubsections();
       hideAllSections();
       document.getElementById("dashboard").style.display = "flex";
     }
@@ -360,36 +361,43 @@
     }
 
     function showPages() {
+      hideServiceSubsections();
       hideAllSections();
       document.getElementById("pages").style.display = "block";
     }
 
     function showAppointments() {
+      hideServiceSubsections();
       hideAllSections();
       document.getElementById("appointments").style.display = "block";
     }
 
     function showSubscribers() {
+      hideServiceSubsections();
       hideAllSections();
       document.getElementById("subscribers").style.display = "block";
     }
 
     function showAddCustomer() {
+      hideServiceSubsections();
       hideAllSections();
       document.getElementById("addCustomer").style.display = "block";
     }
 
     function showCustomerList() {
+      hideServiceSubsections();
       hideAllSections();
       document.getElementById("customerList").style.display = "block";
     }
 
     function showInvoices() {
+      hideServiceSubsections();
       hideAllSections();
       document.getElementById("invoices").style.display = "block";
     }
 
     function showAddServices() {
+
       hideServiceSubsections();
       document.getElementById("addServices").style.display = "block";
     }
@@ -410,6 +418,7 @@
       const serviceDescription = document.getElementById('service-description').value;
       const Cost = document.getElementById('service-cost').value;
       const CreationDate = '';
+      const service_stat = '';
 
       try {
           const response = await fetch('http://localhost:3000/api/AddService', {
@@ -417,7 +426,7 @@
               headers: {
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ serviceName, serviceDescription, Cost, CreationDate })
+              body: JSON.stringify({ serviceName, serviceDescription, Cost, CreationDate,service_stat })
           });
 
           if (response.ok) {
@@ -434,7 +443,7 @@
 
   async function deleteService(id) {
       const response = await fetch(`http://localhost:3000/api/DeleteService/${id}`, {
-        method: 'DELETE',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -442,8 +451,7 @@
       fetchServices();
 }
   
-  
-    async function fetchServices() {
+  async function fetchServices() {
       try {
         const response = await fetch('http://localhost:3000/api/fetchServiceNames');
         const services = await response.json();
@@ -498,10 +506,8 @@
         console.error('Error fetching services:', error);
       }
     }
-
     
-    
-    function editService(service_id,service_name,service_cost,service_description) {
+  function editService(service_id,service_name,service_cost,service_description) {
       hideServiceSubsections();
       const serviceNameElement = document.getElementById('ser_name')
       const serviceCostElement = document.getElementById('ser_cost');
@@ -516,7 +522,7 @@
 
     }
 
-    function update_service(){
+  function update_service(){
       const updatedService = {
         name: document.getElementById('ser_name').value,
         cost: document.getElementById('ser_cost').value,
