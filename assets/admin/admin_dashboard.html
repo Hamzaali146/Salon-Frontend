@@ -181,6 +181,22 @@
     tbody tr:last-of-type {
         border-bottom: 2px solid #009879;
     }
+    .employee-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.employee-buttons button {
+  padding: 10px 20px;
+  background-color: #3f48cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.employee-buttons button:hover {
+  background-color: #575fcf;
+}
 
   </style>
 </head>
@@ -210,6 +226,7 @@
       <li onclick="showInvoices()">
         <i class="fas fa-file-invoice"></i>Invoices
       </li>
+      <li onclick="showEmployees()"><i class="fas fa-users"></i>Employees</li>
     </ul>
   </div>
   <div class="main-content" id="main-content">
@@ -330,6 +347,50 @@
       <p>Here are all the invoices...</p>
       <!-- Add your invoices content here -->
     </div>
+    <div id="employees" style="display: none">
+      <h2>Employees</h2>
+      <div class="employee-buttons">
+        <button onclick="showAddEmployee()">Add Employee</button>
+        <button onclick="showManageEmployees()">Manage Employees</button>
+      </div>
+      <div id="addEmployee" style="display: none">
+        <div class="contact-form">
+          <h2>Add Employee</h2>
+          <input type="text" name="name" placeholder="Employee Name" required id="employee-name">
+          <input type="text" name="position" placeholder="Position" required id="employee-position">
+          <input type="text" name="salary" placeholder="Salary" required id="employee-salary">
+          <button onclick="addEmployee()">ADD</button>
+        </div>
+      </div>
+      <div id="manageEmployees" style="display: none">
+        <table>
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Salary</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="employeeTableBody">
+            <!-- Dynamic content will be added here -->
+          </tbody>
+        </table>
+      </div>
+      <div id="editEmployee" style="display: none">
+        <div class="contact-form">
+          <h2>Edit Employee</h2>
+          <input type="text" name="name" required id="emp_name">
+          <input type="text" name="position" required id="emp_position">
+          <input type="text" name="salary" required id="emp_salary">
+          <input type="hidden" id="emp_id">
+          <button onclick="updateEmployee()">UPDATE</button>
+        </div>
+      </div>
+    </div>
+    
+
   </div>
   <script>
     function hideAllSections() {
@@ -341,6 +402,7 @@
       document.getElementById("addCustomer").style.display = "none";
       document.getElementById("customerList").style.display = "none";
       document.getElementById("invoices").style.display = "none";
+      document.getElementById("employees").style.display="none";
     }
 
     function hideServiceSubsections() {
@@ -399,6 +461,11 @@
       document.getElementById("manageServices").style.display = "block";
       fetchServices();
     }
+    function showEmployees() {
+      hideAllSections();
+      document.getElementById("employees").style.display = "block";
+    }
+
 
     // Show dashboard by default
     showDashboard();
@@ -545,6 +612,163 @@
     
   </script>
 
+
+  </script>
+
+  <script>
+    function showEmployees() {
+  hideAllSections();
+  document.getElementById("employees").style.display = "block";
+  showAddEmployee(); // Show Add Employee by default when Employees is clicked
+}
+
+function hideEmployeeSubsections() {
+  document.getElementById("addEmployee").style.display = "none";
+  document.getElementById("manageEmployees").style.display = "none";
+}
+
+function showAddEmployee() {
+  hideEmployeeSubsections();
+  document.getElementById("addEmployee").style.display = "block";
+}
+
+function showManageEmployees() {
+  hideEmployeeSubsections();
+  document.getElementById("manageEmployees").style.display = "block";
+  fetchEmployees();
+}
+
+async function addEmployee() {
+  const employeeName = document.getElementById('employee-name').value;
+  const employeePosition = document.getElementById('employee-position').value;
+  const employeeSalary = document.getElementById('employee-salary').value;
+
+  try {
+      const response = await fetch('http://localhost:3000/api/AddEmployee', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ employeeName, employeePosition, employeeSalary })
+      });
+
+      if (response.ok) {
+          alert("EMPLOYEE ADDED");
+          // Handle success case
+      } else {
+          // Handle error case
+      }
+  } catch (error) {
+      console.error('API error:', error);
+  }
+}
+
+async function deleteEmployee(id) {
+  const response = await fetch(`http://localhost:3000/api/DeleteEmployee/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  fetchEmployees();
+}
+
+async function fetchEmployees() {
+  try {
+    const response = await fetch('http://localhost:3000/api/fetchEmployees');
+    const employees = await response.json();
+
+    const tableBody = document.getElementById('employeeTableBody');
+    tableBody.innerHTML = ''; // Clear existing table rows
+
+    employees.forEach((employee, index) => {
+      const row = document.createElement('tr');
+
+      const cellIndex = document.createElement('td');
+      cellIndex.textContent = employee.ID;
+      row.appendChild(cellIndex);
+
+      const cellName = document.createElement('td');
+      cellName.textContent = employee.Name;
+      row.appendChild(cellName);
+
+      const cellPosition = document.createElement('td');
+      cellPosition.textContent = employee.Position;
+      row.appendChild(cellPosition);
+
+      const cellSalary = document.createElement('td');
+      cellSalary.textContent = employee.Salary;
+      row.appendChild(cellSalary);
+
+      const cellAction = document.createElement('td');
+      const actionDiv = document.createElement('div');
+      actionDiv.classList.add('action-buttons');
+
+      const editIcon = document.createElement('i');
+      editIcon.classList.add('fas', 'fa-edit');
+      editIcon.setAttribute('title', 'Edit');
+      editIcon.style.marginRight = '20px';
+      editIcon.style.cursor = 'pointer';
+      editIcon.onclick = () => editEmployee(employee.ID, employee.Name, employee.Position, employee.Salary);
+
+      const deleteIcon = document.createElement('i');
+      deleteIcon.classList.add('fas', 'fa-trash');
+      deleteIcon.setAttribute('title', 'Delete');
+      deleteIcon.style.cursor = 'pointer';
+      deleteIcon.onclick = () => deleteEmployee(employee.ID);
+
+      actionDiv.appendChild(editIcon);
+      actionDiv.appendChild(deleteIcon);
+
+      cellAction.appendChild(actionDiv);
+      row.appendChild(cellAction);
+
+      tableBody.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+  }
+}
+
+function editEmployee(emp_id, emp_name, emp_position, emp_salary) {
+  hideEmployeeSubsections();
+  const empNameElement = document.getElementById('emp_name');
+  const empPositionElement = document.getElementById('emp_position');
+  const empSalaryElement = document.getElementById('emp_salary');
+  const empIdElement = document.getElementById('emp_id');
+  document.getElementById('editEmployee').style.display = 'block';
+
+  empNameElement.value = emp_name;
+  empPositionElement.value = emp_position;
+  empSalaryElement.value = emp_salary;
+  empIdElement.value = emp_id;
+}
+
+async function updateEmployee() {
+  const updatedEmployee = {
+    name: document.getElementById('emp_name').value,
+    position: document.getElementById('emp_position').value,
+    salary: document.getElementById('emp_salary').value,
+    id: document.getElementById('emp_id').value,
+  };
+
+  try {
+    await fetch('http://localhost:3000/api/updateEmployee', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedEmployee),
+    });
+    hideEmployeeSubsections(); // Hide the edit form
+    document.getElementById("manageEmployees").style.display = "block"; // Show the manage employees section
+    fetchEmployees(); // Fetch updated employees
+    document.getElementById("editEmployee").style.display = "none";
+    alert('Employee updated successfully');
+  } catch (error) {
+    console.error('Error updating employee:', error);
+  }
+}
 
   </script>
 </body>
