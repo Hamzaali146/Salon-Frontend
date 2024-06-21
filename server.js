@@ -66,7 +66,7 @@ app.get('/api/fetchServiceNames', (req, res) => {
 });
 
 app.get('/api/barbers', (req, res) => {
-  const query = 'SELECT * FROM tblemployee';
+  const query = 'SELECT * FROM tblemployee where status = "Present"';
   db.query(query, (err, results) => {
       if (err) {
           console.error('API ERROR:', err);
@@ -203,7 +203,6 @@ app.put('/api/DeleteService/:serviceID', (req, res) => {
     });
   });
 
-
 app.put('/api/updateService', (req, res) => {
   const {name, cost, description, id} = req.body;
   const serviceQuery = 'update tblservices set ServiceName = ?, Cost = ?, Description = ? where ID = ?';
@@ -215,6 +214,52 @@ app.put('/api/updateService', (req, res) => {
       res.status(200).json({ message: 'Service updated successfully' });
   });
 });
+
+app.post('/api/AddEmployee', (req, res) => {
+  const { employee_name, employee_number, employee_email, employee_salary,employee_appointdate,employee_status } = req.body;
+
+  // Validate the input
+  if (!employee_name|| !employee_number || !employee_email || !employee_salary) {
+      return res.status(400).json({ error: 'All fields are to be filled' });
+  }
+
+  const EmpQuery = 'INSERT INTO tblemployee (EmpName, EmpNumber, EmpEmail, Salary, AppointDate, status ) VALUES (?, ?, ?, ?,current_date(),"Present")';
+  db.query(EmpQuery, [employee_name, employee_number, employee_email, employee_salary,employee_appointdate,employee_status], (err, result) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          return res.status(500).json({ error: err.message });
+      }
+
+      res.status(200).json({ message: 'Employee added successfully' });
+  });
+});
+
+app.put('/api/DeleteEmployee/:empID', (req, res) => {
+  const { empID } = req.params;
+  
+    const Query = 'update tblemployee set status = "Resigned" where ID = ?';
+    db.query(Query, [empID], (err, result) => {
+      if (err) {
+        console.error('API ERROR:', err);
+        return res.status(500).json({ error: err.message });
+      }
+      // Also delete related invoice and billing entries if needed
+      res.status(200).json({ message: 'Service deleted successfully' });
+    });
+});
+
+app.put('/api/updateEmployee', (req, res) => {
+  const {name, phone, salary, email, id} = req.body;
+  const empupdateQuery = 'update tblemployee set EmpName = ?, EmpNumber= ?, Salary = ?,EmpEmail = ? where ID = ?';
+  db.query(empupdateQuery, [ name, phone, salary, email, id], (err, result) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          return res.status(500).json({ error: err.message });
+      }
+      res.status(200).json({ message: 'Employee Details Updated' });
+  });
+});
+
 
 // Start the server
 app.listen(port, () => {
