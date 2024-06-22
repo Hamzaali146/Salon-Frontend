@@ -260,6 +260,52 @@ app.put('/api/updateEmployee', (req, res) => {
   });
 });
 
+app.get('/api/fetchAppointments', (req, res) => {
+  const { Id, Name } = req.query; // Use req.query to access query parameters
+  
+
+  let query = `SELECT A.ID, B.TimeSlots, A.Name, A.AptDate, A.Remarks, C.EmpName 
+              FROM tblappointment A 
+              JOIN tbltimeslots B ON A.AptTimeID = B.ID 
+              JOIN tblemployee C ON A.EmployeeID = C.ID`;
+
+  const params = []; // Array to hold query parameters
+
+  if (Id && Name) {
+      query += ' WHERE A.ID = ? AND A.Name = ?';
+      params.push(Id, Name);
+  } else if (Id) {
+      query += ' WHERE A.ID = ?';
+      params.push(Id);
+  } else if (Name) {
+      
+      query += ' WHERE A.Name = ?';
+      params.push(Name);
+  }
+
+  query += ' ORDER BY A.ID ASC';
+
+  db.query(query,params, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      res.json(results); // Send the results directly
+  });
+});
+
+app.put('/api/UpdateRemarks', (req, res) => {
+  const {Remarks,ID} = req.body;
+  const Query = 'update tblappointment set Remarks = ? where ID = ?';
+  db.query(Query, [ Remarks,ID], (err, result) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          return res.status(500).json({ error: err.message });
+      }
+      res.status(200).json({ message: 'Remarks Entered' });
+  });
+});
 
 // Start the server
 app.listen(port, () => {
