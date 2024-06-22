@@ -307,7 +307,51 @@ app.put('/api/UpdateRemarks', (req, res) => {
   });
 });
 
-// Start the server
+app.get('/api/fetchusernames', (req, res) => {
+  const { custUsername} = req.query
+  const query = 'select * from tblcustomers where username = ? ';
+  db.query(query,[custUsername], (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      res.json(results); // Send the results directly
+  });
+});
+
+app.post('/api/AddCustomer', (req, res) => {
+  const { custName,custEmail,custNumber,custUsername,custPassword } = req.body;
+
+  // Validate the input
+  if (!custName|| !custEmail || !custNumber || !custUsername || !custPassword) {
+    alert("ALL FIELDS ARE REQUIRED");  
+    return res.status(400).json({ error: 'All fields are to be filled' });
+  }
+
+  const cust_Query = 'INSERT INTO tblcustomers (Name, Email, MobileNumber, username,Password ) VALUES (?, ?, ?, ?,?)';
+  db.query(cust_Query, [custName,custEmail,custNumber,custUsername,custPassword], (err, result) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          return res.status(500).json({ error: err.message });
+      }
+
+      res.status(200).json({ message: 'Customer added successfully' });
+  });
+});
+
+app.get('/api/logincust/:username/:password', (req, res) => {
+  const { username, password } = req.params;
+  const query = 'SELECT CASE WHEN EXISTS (SELECT * FROM tblcustomers WHERE BINARY username = ? AND Password = ?) THEN "true" ELSE "false" END AS RecordExists';
+  db.query(query, [username, password], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ success: results[0].RecordExists === 'true' });
+  });
+});
+  // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Service Form</title>
+    <style>
+        
+        .contact-form {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    border-radius: 10px;
+    padding: 30px;
+    width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+    margin-left:420px ;
+    margin-top: 100px;
+    
+    }
+
+    .contact-form h2 {
+        margin: 0 0 20px;
+        text-align: center;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+        color: #999;
+    }
+
+    .contact-form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #ff4081;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .contact-form button:hover {
+        background-color: #e73370;
+    }
+    </style>
+
+</head>
+<body>
+    <div class="contact-form">
+        <h2>Add Customer</h2>
+        <input type="text" name="name" placeholder="Your Name" required id="cust_name">
+        <input type="text" name="email" placeholder="email" required id="cust_email">
+        <input type="text" name="number" placeholder="Your Number" required id="cust_number">
+        <input type="text" name="username" placeholder="username" required id="cust_username">
+        <input type="text" name="password" placeholder="Password" required id="cust_password">
+        <button onclick="addcustomer()">ADD</button>
+    </div>
+
+    <script>
+    async function addcustomer() {
+        const custName = document.getElementById('cust_name').value;
+        const custEmail = document.getElementById('cust_email').value;
+        const custNumber = document.getElementById('cust_number').value;
+        const custUsername = document.getElementById('cust_username').value;
+        const custPassword = document.getElementById('cust_password').value;
+        
+        try {
+        const response = await fetch(`http://localhost:3000/api/fetchusernames?custUsername=${custUsername}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const results = await response.json();
+
+        if (results.length === 0) {
+            // Username does not exist, proceed with the next steps
+            console.log("Username is available, proceeding...");
+            // Continue with your form submission or other logic
+        } else {
+            // Username exists, prevent further action
+            console.log("Username already exists, cannot proceed.");
+            alert("Username already exists, please choose a different one.");
+            return false;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+
+      try {
+          const response = await fetch('http://localhost:3000/api/AddCustomer', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ custName,custEmail,custNumber,custUsername,custPassword })
+          });
+
+          if (response.ok) {
+              alert("ACCOUNT CREATED")
+              window.location.href = 'home.html';
+              // Handle success case
+          } 
+      } catch (error) {
+          console.error('API error:', error);
+      }
+    } 
+    </script>
+</body>
+
+</html>
