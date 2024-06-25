@@ -79,17 +79,17 @@ app.get('/api/barbers', (req, res) => {
 
 // API endpoint to insert a new appointment
 app.post('/api/AddAppointments', (req, res) => {
-  const { name, employeeid, adate, atime, email, phone, Remarks, selectedServices } = req.body;
+  const { employeeid, customerID,adate, atime, Remarks, selectedServices } = req.body;
 
 
   // Validate the input
-  if (!name || !employeeid || !adate || !atime || !email || !phone || !selectedServices || selectedServices.length === 0) {
-      return res.status(400).json({ error: 'Name, EmployeeID, AptDate, AptTimeID, Email, Services, and PhoneNumber are required' });
+  if ( !employeeid || !adate || !atime || !selectedServices || selectedServices.length === 0 || !customerID) {
+      return res.status(400).json({ error: ' EmployeeID, AptDate, AptTimeID, and Services  are required' });
   }
 
   // Insert appointment query
-  const appointmentQuery = 'INSERT INTO tblappointment (Name, EmployeeID, AptDate, AptTimeID, Email, PhoneNumber, Remarks) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  db.query(appointmentQuery, [name, employeeid, adate, atime, email, phone, Remarks], (err, result) => {
+  const appointmentQuery = 'INSERT INTO tblappointment (EmployeeID,CustomerID, AptDate, AptTimeID, Remarks) VALUES (?, ?, ?, ?, ? )';
+  db.query(appointmentQuery, [ employeeid, customerID, adate, atime, Remarks], (err, result) => {
       if (err) {
           console.error('API ERROR:', err);
           return res.status(500).json({ error: err.message });
@@ -141,7 +141,7 @@ app.get('/api/AppointmentDetails', (req, res) => {
     SELECT 
       Apt.ID AS appointmentID,
       Inv.ID AS invoiceID,
-      Apt.Name,
+      cust.Name,
       Apt.AptDate,
       ts.TimeSlots,
       SUM(Ser.cost) AS Total 
@@ -155,10 +155,12 @@ app.get('/api/AppointmentDetails', (req, res) => {
       tblservices Ser ON bill.ServiceID = Ser.ID 
     JOIN 
       tbltimeslots ts ON Apt.AptTimeID = ts.ID 
+    JOIN
+      tblcustomers cust on Apt.CustomerID=cust.ID 
     WHERE 
       Apt.ID = ? 
     GROUP BY 
-      Apt.ID, Apt.Name, Apt.AptDate, Inv.ID, ts.TimeSlots`;
+      Apt.ID, cust.ID, Apt.AptDate, Inv.ID, ts.TimeSlots`;
 
   db.query(query, [aptno], (err, results) => {
     if (err) {
@@ -263,28 +265,32 @@ app.put('/api/updateEmployee', (req, res) => {
 app.get('/api/fetchAppointments', (req, res) => {
   const { Id, Name } = req.query; // Use req.query to access query parameters
   
-
-  let query = `SELECT A.ID, B.TimeSlots, A.Name, A.AptDate, A.Remarks, C.EmpName 
+  var name = "%"+Name+"%"
+  let query = `SELECT A.ID, B.TimeSlots, D.Name, A.AptDate, A.Remarks, C.EmpName 
               FROM tblappointment A 
               JOIN tbltimeslots B ON A.AptTimeID = B.ID 
-              JOIN tblemployee C ON A.EmployeeID = C.ID`;
+              JOIN tblemployee C ON A.EmployeeID = C.ID
+              JOIN tblcustomers D ON A.CustomerID= D.ID`;
 
   const params = []; // Array to hold query parameters
 
   if (Id && Name) {
-      query += ' WHERE A.ID = ? AND A.Name = ?';
-      params.push(Id, Name);
+      query += ' WHERE A.ID = ? AND D.Name like ?';
+      params.push(Id, name);
+      
   } else if (Id) {
       query += ' WHERE A.ID = ?';
       params.push(Id);
+
   } else if (Name) {
       
-      query += ' WHERE A.Name = ?';
-      params.push(Name);
+      query += ' WHERE D.Name like ?';
+      params.push(name);
+  
   }
 
-  query += ' ORDER BY A.ID ASC';
-
+  query += ' ORDER BY  A.AptDate DESC,B.TimeSlots ASC';
+  console.log(query);
   db.query(query,params, (err, results) => {
       if (err) {
           console.error('API ERROR:', err);
@@ -342,13 +348,14 @@ app.post('/api/AddCustomer', (req, res) => {
 
 app.get('/api/logincust/:username/:password', (req, res) => {
   const { username, password } = req.params;
-  const query = 'SELECT CASE WHEN EXISTS (SELECT * FROM tblcustomers WHERE BINARY username = ? AND Password = ?) THEN "true" ELSE "false" END AS RecordExists';
-  db.query(query, [username, password], (err, results) => {
+  const query = "SELECT CASE WHEN EXISTS (SELECT * FROM tblcustomers WHERE BINARY username = ? AND Password = ?) THEN (Select ID from tblcustomers where username = ?) ELSE 'false' END AS RecordExists";
+  db.query(query, [username, password, username], (err, results) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
     }
-    res.json({ success: results[0].RecordExists === 'true' });
+    res.json({ success: results[0].RecordExists != 'false' ? results[0].RecordExists : false });
+    
   });
 });
   // Start the server

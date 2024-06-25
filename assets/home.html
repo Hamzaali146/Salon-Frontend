@@ -215,7 +215,7 @@
             <li><a href="#">Home</a></li>
             <li><a href="contact_cust.html">Service</a></li>
             <li><a href="contact_cust.html">Contact</a></li>
-            <li><a href="admin/admin.html">Admin</a></li>
+ 
           </ul>
         </div>
       </div>
@@ -228,9 +228,9 @@
             System
           </h1>
           <p>Your Type, Your Style & your color</p>
-          <a href="appoinment.html"
-            ><button class="button-5" role="button">Book appointment</button></a
-          >
+          <!-- <a href="appoinment.html?customer"
+            >-->
+            <button class="button-5" role="button" onclick="ToBookAppointment()">Book appointment</button>
         </div>
       </div>
     </section>
@@ -280,37 +280,40 @@
       </div>
       <div style="text-align: center; padding-top: 20px">
         <p>MEN SALON MANAGEMENT SYSTEM</p>
+        <input id="customerID" hidden/>
       </div>
     </footer>
   </body>
 </html>
 
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fetch Data Example</title>
-</head>
-<body>
-  <h1>Data from MySQL Database</h1>
-  <div id="data-container"></div>
+
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      fetch('http://localhost:3000/api/data')
-        .then(response => response.json())
-        .then(data => {
-          const container = document.getElementById('data-container');
-          data.forEach(item => {
-            const div = document.createElement('div');
-            div.textContent = JSON.stringify(item);
-            container.appendChild(div);
-          });
-        })
-        .catch(error => console.error('Error fetching data:', error));
+      
+        // Get customerID from query parameters
+        const params = getQueryParams();
+        const customerID = params.customerID;
+
+        // Display the customerID on the page
+        if (customerID) {
+            document.getElementById("customerID").value = customerID;
+        }
     });
+    function getQueryParams() {
+        const params = {};
+        const queryString = window.location.search.substring(1);
+        const pairs = queryString.split("&");
+        for (const pair of pairs) {
+            const [key, value] = pair.split("=");
+            params[key] = decodeURIComponent(value);
+        }
+        return params;
+    }
+
+    function ToBookAppointment(){
+      window.location.href = 'appoinment.html?customerID='+document.getElementById("customerID").value;
+
+    }
   </script>
-</body>
-</html>
- -->
+

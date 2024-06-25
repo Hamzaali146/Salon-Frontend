@@ -536,6 +536,7 @@
     }
     
     function showEmployees() {
+    hideServiceSubsections();
     hideAllSections();
     document.getElementById("employees").style.display = "block";
     showAddEmployee(); // Show Add Employee by default when Employees is clicked
@@ -710,6 +711,7 @@
     
 
   async function addEmployee() {
+    document.getElementById("editEmployee").style.display = "none";
     const employee_name = document.getElementById('employee-name').value;
     const employee_number = document.getElementById('employee-phonenumber').value;
     const employee_email = document.getElementById('employee-email').value;
@@ -853,7 +855,7 @@
     const Name = document.getElementById('searchInputName').value
 
     try {
-      console.log(Id,Name);
+
       const url = new URL('http://localhost:3000/api/fetchAppointments');
       url.searchParams.append('Id', Id);
       url.searchParams.append('Name', Name);
@@ -879,7 +881,7 @@
             
 
             const cellDate = document.createElement('td');
-            cellDate.textContent = appointment.AptDate;
+            cellDate.textContent = appointment.AptDate.split("T")[0];
             row.appendChild(cellDate);
 
             const celltime = document.createElement('td');
@@ -919,16 +921,15 @@
     }
 }
 
-  document.getElementById('searchInputId').addEventListener('keypress', async (event) => {
-      if (event.key === 'Enter') {
-          await fetchAppointments();
-      }
+  document.getElementById('searchInputId').addEventListener('keyup', async (event) => {
+    await fetchAppointments();
+      // if (event.key === 'Enter') {
+      //     await fetchAppointments();
+      // }
   });
 
-  document.getElementById('searchInputName').addEventListener('keypress', async (event) => {
-    if (event.key === 'Enter') {
-        await fetchAppointments();
-    }
+  document.getElementById('searchInputName').addEventListener('keyup', async (event) => {
+    await fetchAppointments();
 });
 
     async function handleRemarksUpdate(Remarks, appointmentID) {
