@@ -54,8 +54,9 @@ app.get('/api/fetchtimeslots', (req, res) => {
 });
 
 app.get('/api/fetchServiceNames', (req, res) => {
-  const query = 'SELECT * FROM tblservices where IsActive = True';
-  db.query(query, (err, results) => {
+  const { status } = req.query
+  const query = 'SELECT * FROM tblservices where IsActive = ?';
+  db.query(query, [status],(err, results) => {
       if (err) {
           console.error('API ERROR:', err);
           res.status(500).json({ error: err.message });
@@ -192,10 +193,11 @@ app.post('/api/AddService', (req, res) => {
 });
 
 app.put('/api/DeleteService/:serviceID', (req, res) => {
+  const { status } = req.body
   const { serviceID } = req.params;
   
-    const Query = 'update tblservices set IsActive = false where ID = ?';
-    db.query(Query, [serviceID], (err, result) => {
+    const Query = 'update tblservices set IsActive = ? where ID = ?';
+    db.query(Query, [status,serviceID], (err, result) => {
       if (err) {
         console.error('API ERROR:', err);
         return res.status(500).json({ error: err.message });
@@ -289,7 +291,7 @@ app.get('/api/fetchAppointments', (req, res) => {
   
   }
 
-  query += ' ORDER BY  A.AptDate DESC,B.TimeSlots ASC';
+  query += ' ORDER BY  A.AptDate ASC';
   db.query(query,params, (err, results) => {
       if (err) {
           console.error('API ERROR:', err);
@@ -357,6 +359,28 @@ app.get('/api/logincust/:username/:password', (req, res) => {
     
   });
 });
+
+app.get('/api/fetchinvoices', (req, res) => {
+  const { Id } = req.query; // Use req.query to access query parameters
+  let query = `select A.ID, B.Name from tblappointment A join tblcustomers B on A.CustomerID = B.ID `;
+
+  const params = []; // Array to hold query parameters
+
+  if (Id) {
+    query += ' WHERE A.ID = ?';
+    params.push(Id);
+
+}
+  db.query(query,params, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      res.json(results); // Send the results directly
+  });
+});
+
   // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

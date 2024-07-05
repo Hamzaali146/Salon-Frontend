@@ -304,60 +304,75 @@
         <p>2650</p>
       </div>
     </div>
-    <div id="services" style="display: none">
+    <div id="services">
       <h2>Services</h2>
       <div class="service-buttons">
         <button onclick="showAddServices()">Add Services</button>
         <button onclick="showManageServices()">Manage Services</button>
+        <button onclick="showNotactiveServices()">Currently Offline Services</button>
       </div>
-      <div id="addServices" style="display: none">
+    
+      <div id="addServices" style="display: none;">
         <div class="contact-form">
           <h2>Add Service</h2>
-          <input type="text" name="name" placeholder=" Service Name" required id="service-name">
+          <input type="text" name="name" placeholder="Service Name" required id="service-name">
           <input type="text" name="cost" placeholder="Cost" required id="service-cost">
           <textarea name="Description" placeholder="Description" required id="service-description"></textarea>
           <button onclick="addservice()">ADD</button>
+        </div>
       </div>
-      </div>
-      </div>
-      <div id="manageServices" style="display: none;width: 1200px;" >
+    
+      <div id="manageServices" style="display: none; width: 1200px;">
         <table style="width: 100%;">
-          <thead >
+          <thead>
             <tr>
-                <th>Number</th>
-                <th>Name</th>
-                <th>Cost</th>
-                <th>Action</th>
+              <th>Number</th>
+              <th>Name</th>
+              <th>Cost</th>
+              <th>Action</th>
             </tr>
-        </thead>
-
+          </thead>
           <tbody id="serviceTableBody">
-            <!-- Dynamic content will be added here -->
+          
           </tbody>
         </table>
-        
-      
       </div>
-
-      <div id="editService" style="display: none">
+    
+      <div id="notactiveservices" style="display: none; width: 1200px;">
+        
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>Name</th>
+              <th>Cost</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="NotActiveServicesTableBody">
+        
+          </tbody>
+        </table>
+      </div>
+    
+      <div id="editService" style="display: none;">
         <div class="contact-form">
           <h2>Edit Service</h2>
           <input type="text" name="name" required id="ser_name">
-          <input type="text" name="cost" required id="ser_cost"  >
-          <textarea name="Description" required id="ser_desc""></textarea>
+          <input type="text" name="cost" required id="ser_cost">
+          <textarea name="Description" required id="ser_desc"></textarea>
           <input type="hidden" id="ser_id">
           <button onclick="update_service()">UPDATE</button>
         </div>
       </div>
-
-      
+    
     </div>
+    
     <div id="pages" style="display: none">
       <h2>Pages</h2>
       <p>Here are all the pages...</p>
       <!-- Add your pages content here -->
     </div>
-    
     <div id="appointments" style="display: none;width: 1200px;">
       <h2>Appointments</h2>
       <div class="searchBarContainer">
@@ -399,10 +414,28 @@
       <p>Here is the customer list...</p>
       <!-- Add your customer list content here -->
     </div>
-    <div id="invoices" style="display: none">
+    <div id="invoices" style="display: none;">
       <h2>Invoices</h2>
-      <p>Here are all the invoices...</p>
-      <!-- Add your invoices content here -->
+      <div class="searchBarContainer" >
+        <div class="searchBar" style="width: 1200px;">
+            <input type="text" id="searchAptId" class="searchInput" placeholder="Search by ID...">
+        </div>
+        
+      </div>
+      <table >
+        <thead>
+          <tr>
+            <th>Serial No</th>
+            <th>Apt No</th>
+            <th>Customer Name</th>
+            <th>Reciept </th>
+            
+          </tr>
+        </thead>
+        <tbody id="invoiceTableBody">
+          <!-- Dynamic content will be added here -->
+        </tbody>
+      </table>
     </div>
     <div id="employees" style="display: none">
       <h2>Employees</h2>
@@ -466,6 +499,7 @@
     function hideServiceSubsections() {
       document.getElementById("addServices").style.display = "none";
       document.getElementById("manageServices").style.display = "none";
+      document.getElementById("notactiveservices").style.display = "none";
     }
 
     function showDashboard() {
@@ -516,6 +550,7 @@
       hideServiceSubsections();
       hideAllSections();
       document.getElementById("invoices").style.display = "block";
+      fetchinvoices();
     }
 
     function showAddServices() {
@@ -545,6 +580,7 @@
     function hideEmployeeSubsections() {
       document.getElementById("addEmployee").style.display = "none";
       document.getElementById("manageEmployees").style.display = "none";
+      // document.getElementById("manageEmployees").style.display = "none";
     }
 
     function showAddEmployee() {
@@ -557,6 +593,16 @@
     document.getElementById("manageEmployees").style.display = "block";
     fetchEmployees();
   }
+
+  function showNotactiveServices() {
+
+      hideServiceSubsections();
+      // document.getElementById("editService").style.display = "none";
+      document.getElementById("notactiveservices").style.display = "block";
+      // document.getElementById("manageServices").style.display = "none";
+
+      fetchNotactiveServices();
+    }
 
 
     // Show dashboard by default
@@ -598,6 +644,7 @@
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ status: 0 }),
       });
       fetchServices();
 }
@@ -605,8 +652,14 @@
   async function fetchServices() {
     document.getElementById("editService").style.display = "none";
       try {
-        const response = await fetch('http://localhost:3000/api/fetchServiceNames');
+
+        const url = new URL('http://localhost:3000/api/fetchServiceNames');
+        url.searchParams.append('status', 1);
+
+        const response = await fetch(url);
+
         const services = await response.json();
+
 
         const tableBody = document.getElementById('serviceTableBody');
         tableBody.innerHTML = ''; // Clear existing table rows
@@ -697,15 +750,75 @@
         document.getElementById("editService").style.display = "none";
         alert('Service updated successfully');
     }
+
+  async function fetchNotactiveServices() {
+    document.getElementById("editService").style.display = "none";
+  try {
+    const url = new URL('http://localhost:3000/api/fetchServiceNames');
+    url.searchParams.append('status', 0);
+
+    const response = await fetch(url);
+    const services = await response.json();
+
+    const tableBody = document.getElementById('NotActiveServicesTableBody');
+    tableBody.innerHTML = ''; // Clear existing table rows
+
+    services.forEach((service, index) => {
+
+      const row = document.createElement('tr');
+
+      const cellIndex = document.createElement('td');
+      cellIndex.textContent = service.ID;
+      row.appendChild(cellIndex);
+
+      const cellName = document.createElement('td');
+      cellName.textContent = service.ServiceName;
+      row.appendChild(cellName);
+
+      const cellPrice = document.createElement('td');
+      cellPrice.textContent = service.Cost;
+      row.appendChild(cellPrice);
+
+      const cellAction = document.createElement('td');
+      const actionDiv = document.createElement('div');
+      actionDiv.classList.add('action-buttons');
+
+      const activateIcon = document.createElement('i');
+      activateIcon.classList.add('fas', 'fa-check');
+      activateIcon.setAttribute('title', 'Make Active');
+      activateIcon.style.cursor = 'pointer';
+      activateIcon.onclick = () => makeServiceActive(service.ID);
+
+      actionDiv.appendChild(activateIcon);
+      cellAction.appendChild(actionDiv);
+      row.appendChild(cellAction);
+
+      // Append the row to the table body
+      tableBody.appendChild(row);
+    });
+ 
+  } catch (error) {
+    console.error('Error fetching services:', error);
+  }
+}
+
+  async function makeServiceActive(id) {
+    const response = await fetch(`http://localhost:3000/api/DeleteService/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: 1 }),
+    });
+    fetchNotactiveServices();
+}
     
-        
     
+
+  </script>
+
+
   
-    
-  </script>
-
-
-  </script>
 
   <script>
     
@@ -737,6 +850,10 @@
     } catch (error) {
         console.error('API error:', error);
     }
+    document.getElementById('employee-name').value = '';
+    document.getElementById('employee-phonenumber').value = '';
+    document.getElementById('employee-email').value = '';
+    document.getElementById('employee-salary').value = '';
   }
 
   async function deleteEmployee(id) {
@@ -919,18 +1036,18 @@
     }
 }
 
-  document.getElementById('searchInputId').addEventListener('keyup', async (event) => {
-    await fetchAppointments();
-      // if (event.key === 'Enter') {
-      //     await fetchAppointments();
-      // }
+    document.getElementById('searchInputId').addEventListener('keyup', async (event) => {
+      await fetchAppointments();
+        // if (event.key === 'Enter') {
+        //     await fetchAppointments();
+        // }
+    });
+
+    document.getElementById('searchInputName').addEventListener('keyup', async (event) => {
+      await fetchAppointments();
   });
 
-  document.getElementById('searchInputName').addEventListener('keyup', async (event) => {
-    await fetchAppointments();
-});
-
-    async function handleRemarksUpdate(Remarks, appointmentID) {
+  async function handleRemarksUpdate(Remarks, appointmentID) {
     try {
         const response = await fetch('http://localhost:3000/api/UpdateRemarks', {
             method: 'PUT',
@@ -948,7 +1065,76 @@
     
 }
   
+async function fetchinvoices() {
+    const Id = document.getElementById('searchAptId').value;
 
+    try {
+
+      const url = new URL('http://localhost:3000/api/fetchinvoices');
+      if (Id) {
+      url.searchParams.append('Id', Id);
+    }
+      
+
+      const response = await fetch(url);
+      const invoices = await response.json();
+
+      const tableBody = document.getElementById('invoiceTableBody');
+      tableBody.innerHTML = ''; // Clear existing table rows
+      let serialno = 1;
+ 
+          invoices.forEach((invoice, index) => {
+            
+            const row = document.createElement('tr');
+
+            const cellNo = document.createElement('td');
+            cellNo.textContent = serialno;
+            row.appendChild(cellNo);
+            serialno += 1;
+
+            const cellIndex = document.createElement('td');
+            cellIndex.textContent = invoice.ID;
+            row.appendChild(cellIndex);
+
+            const cellName = document.createElement('td');
+            cellName.textContent = invoice.Name;
+            row.appendChild(cellName);
+
+            const cellAction = document.createElement('td');
+            const actionDiv = document.createElement('div');
+            actionDiv.classList.add('action-buttons');
+
+            const printIcon = document.createElement('i');
+            printIcon.classList.add('fas', 'fa-print');
+            printIcon.setAttribute('title', 'print');
+            printIcon.style.cursor = 'pointer'
+
+            actionDiv.appendChild(printIcon);
+
+            cellAction.appendChild(actionDiv);
+            row.appendChild(cellAction);
+
+            
+
+              
+            tableBody.appendChild(row);
+            
+
+            
+          });
+      
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+    }  
+}
+  document.getElementById('searchAptId').addEventListener('keyup', async (event) => {
+      await fetchinvoices();
+        // if (event.key === 'Enter') {
+        //     await fetchAppointments();
+        // }
+    });
+  
+  
   </script>
 </body>
 </html>
