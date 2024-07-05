@@ -636,6 +636,10 @@
       } catch (error) {
           console.error('API error:', error);
       }
+      document.getElementById('service-name').value = '';
+      document.getElementById('service-description').value = '';
+      document.getElementById('service-cost').value = '';
+      
     } 
 
   async function deleteService(id) {
