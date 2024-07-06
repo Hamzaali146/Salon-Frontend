@@ -108,10 +108,23 @@
               },
               body: JSON.stringify({ custName,custEmail,custNumber,custUsername,custPassword })
           });
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+            }
 
+        // Retrieve the userType from the URL
+        
           if (response.ok) {
               alert("ACCOUNT CREATED")
-              window.location.href = 'login_cust.html';
+              const userType = getQueryParam('userType');
+              if (userType === 'admin'){
+                alert("REDIRECTING BACK TO ADMIN");
+                window.location.href = '/admin/admin_dashboard.html';
+              }
+              else{
+                window.location.href = 'login_cust.html'
+              }
               // Handle success case
           } 
       } catch (error) {

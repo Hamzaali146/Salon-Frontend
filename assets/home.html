@@ -38,6 +38,7 @@
         text-align: center;
       }
       .headerright ul li {
+        margin-top: 10px;
         list-style-type: none;
       }
       .headerright ul {
@@ -196,9 +197,12 @@
         transform: translateY(0);
       }
       .headerright ul a:hover {
+
+        
         color: #aa9144;
       }
       .headerright ul a {
+        font-size: 20px;
         text-decoration: none;
         color: black;
       }
@@ -212,9 +216,9 @@
         </div>
         <div class="headerright">
           <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="contact_cust.html">Service</a></li>
+            <li><a href="service_cust.html">Service</a></li>
             <li><a href="contact_cust.html">Contact</a></li>
+            <button class="button-5" role="button" style="background-color: brown;margin-left: 8px;font-size: 15px;" onclick="Log_out()">Log Out</button>
  
           </ul>
         </div>
@@ -313,7 +317,11 @@
 
     function ToBookAppointment(){
       window.location.href = 'appoinment.html?customerID='+document.getElementById("customerID").value;
+    }
 
+    function Log_out(){
+      alert("Log Out Successful")
+      window.location.href = 'login_cust.html';
     }
   </script>
 

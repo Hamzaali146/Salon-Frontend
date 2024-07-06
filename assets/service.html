@@ -157,31 +157,41 @@
         </footer>
     
     <script>
-        function Services_offered() {
-        fetch('http://localhost:3000/api/fetchServiceNames')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const servicesContainer = $('#services');
-            servicesContainer.empty(); // Clear existing content
-            data.forEach(service => {
-                servicesContainer.append(
-                    `<div class="service-item">
-                        <li style="margin:2px;margin-left:70px;padding-bottom:2px;"><h4 style="font-size: 24px;margin-left:4px"><strong>${service.ServiceName} </strong>- ${service.Cost} Rs</h4></li>
-                        <p style="margin-left:70px;padding-top:0px;padding-bottom: 10px" id='service-description'><u ><strong>DESCRIPTION:</strong></u> ${service.Description}</p>
-                        
-                    </div>`
-                );
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching services:', error);
+async function Services_offered() {
+    try {
+        const url = new URL('http://localhost:3000/api/fetchServiceNames');
+        url.searchParams.append('status', 1);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const services = await response.json();
+
+        const servicesContainer = $('#services');
+        servicesContainer.empty(); // Clear existing content
+
+        services.forEach(service => {
+            servicesContainer.append(
+                `<div class="service-item">
+                    <li style="margin:2px;margin-left:70px;padding-bottom:2px;">
+                        <h4 style="font-size: 24px;margin-left:4px">
+                            <strong>${service.ServiceName}</strong> - ${service.Cost} Rs
+                        </h4>
+                    </li>
+                    <p style="margin-left:70px;padding-top:0px;padding-bottom: 10px" id='service-description'>
+                        <u><strong>DESCRIPTION:</strong></u> ${service.Description}
+                    </p>
+                </div>`
+            );
         });
+    } catch (error) {
+        console.error('Error fetching services:', error);
     }
+}
+
     $(document).ready(function() {
             Services_offered();
         });

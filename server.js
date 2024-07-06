@@ -78,7 +78,6 @@ app.get('/api/barbers', (req, res) => {
   });
 });
 
-// API endpoint to insert a new appointment
 app.post('/api/AddAppointments', (req, res) => {
   const { employeeid, customerID,adate, atime, Remarks, selectedServices } = req.body;
 
@@ -205,7 +204,7 @@ app.put('/api/DeleteService/:serviceID', (req, res) => {
       // Also delete related invoice and billing entries if needed
       res.status(200).json({ message: 'Service deleted successfully' });
     });
-  });
+});
 
 app.put('/api/updateService', (req, res) => {
   const {name, cost, description, id} = req.body;
@@ -332,7 +331,6 @@ app.post('/api/AddCustomer', (req, res) => {
 
   // Validate the input
   if (!custName|| !custEmail || !custNumber || !custUsername || !custPassword) {
-    alert("ALL FIELDS ARE REQUIRED");  
     return res.status(400).json({ error: 'All fields are to be filled' });
   }
 
@@ -381,7 +379,29 @@ app.get('/api/fetchinvoices', (req, res) => {
   });
 });
 
-  // Start the server
+app.get('/api/fetchCustomers', (req, res) => {
+  const { Name } = req.query; // Use req.query to access query parameters
+  let query = `select * from tblcustomers`;
+  var name = "%"+Name+"%"
+
+  const params = []; // Array to hold query parameters
+
+  if (Name) {
+    query += ' WHERE Name like ?';
+    params.push(name);
+
+}
+  db.query(query,params, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      res.json(results); // Send the results directly
+  });
+});
+
+// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

@@ -31,7 +31,7 @@
                         <h2 class="page-title">Book Appointment</h2>
                         <div class="page-breadcrumb">
                             <ol class="breadcrumb">
-                                <li><a href="index.html">Home</a></li>
+                                <li><a href="home.html">Home</a></li>
                                 <li class="active">Book Appointment</li>
                             </ol>
                         </div>
@@ -237,42 +237,45 @@
                 });
         }
 
-        function fetchServicesNames() {
-        fetch('http://localhost:3000/api/fetchServiceNames')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(services => {
-                const servicesContainer = document.getElementById('services');
-                servicesContainer.innerHTML = ''; // Clear existing checkboxes
+    async function fetchServicesNames() {
+        try {
+            const url = new URL('http://localhost:3000/api/fetchServiceNames');
+            url.searchParams.append('status', 1);
 
-                services.forEach(service => {
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.name = 'selectedServices';
-                    checkbox.value = service.ID;
-                    checkbox.style.marginLeft = '50px';
-                    
-                    const label = document.createElement('label');
-                    label.textContent = service.ServiceName;
-                    label.style.marginLeft = '10px';
-                    const br = document.createElement('br');
+            const response = await fetch(url);
 
-                    servicesContainer.appendChild(checkbox);
-                    servicesContainer.appendChild(label);
-                    servicesContainer.appendChild(br);
-                });
-            })
-            .catch(error => {
-                alert("Function ERROR: " + error);
-                console.error('Error fetching services:', error);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const services = await response.json();
+
+            const servicesContainer = document.getElementById('services');
+            servicesContainer.innerHTML = ''; // Clear existing checkboxes
+
+            services.forEach(service => {
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = 'selectedServices';
+                checkbox.value = service.ID;
+                checkbox.style.marginLeft = '50px';
+                
+                const label = document.createElement('label');
+                label.textContent = service.ServiceName;
+                label.style.marginLeft = '10px';
+                const br = document.createElement('br');
+
+                servicesContainer.appendChild(checkbox);
+                servicesContainer.appendChild(label);
+                servicesContainer.appendChild(br);
             });
+        } catch (error) {
+            alert("Function ERROR: " + error);
+            console.error('Error fetching services:', error);
+        }
     }
 
-        function fetchEmployee() {
+    function fetchEmployee() {
             fetch('http://localhost:3000/api/barbers')
                 .then(response => {
                     if (!response.ok) {

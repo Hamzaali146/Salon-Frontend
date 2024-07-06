@@ -81,22 +81,7 @@
     .submenu {
       padding-left: 20px;
     }
-    .service-buttons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .service-buttons button {
-      padding: 10px 20px;
-      background-color: #3f48cc;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .service-buttons button:hover {
-      background-color: #575fcf;
-    }
+   
     .contact-form {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     border-radius: 10px;
@@ -195,12 +180,12 @@
         outline: none;
     }
 
-    .employee-buttons {
+    .subsectionsbuttons {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
     }
-    .employee-buttons button {
+    .subsectionsbuttons button {
       padding: 10px 20px;
       background-color: #3f48cc;
       color: white;
@@ -208,7 +193,7 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .employee-buttons button:hover {
+    .subsectionsbuttons button:hover {
       background-color: #575fcf;
     }
 
@@ -245,19 +230,15 @@
       <li onclick="showServices()">
         <i class="fas fa-concierge-bell"></i>Services
       </li>
-      <li onclick="showPages()"><i class="fas fa-file-alt"></i>Pages</li>
+
       <li onclick="showAppointments()">
         <i class="fas fa-calendar-check"></i>Appointment
       </li>
-      <li onclick="showSubscribers()">
-        <i class="fas fa-users"></i>Subscriber
+      
+      <li onclick="showCustomer()">
+        <i class="fas fa-user-plus"></i>Customers
       </li>
-      <li onclick="showAddCustomer()">
-        <i class="fas fa-user-plus"></i>Add Customer
-      </li>
-      <li onclick="showCustomerList()">
-        <i class="fas fa-list"></i>Customer List
-      </li>
+     
       <li onclick="showInvoices()">
         <i class="fas fa-file-invoice"></i>Invoices
       </li>
@@ -306,7 +287,7 @@
     </div>
     <div id="services">
       <h2>Services</h2>
-      <div class="service-buttons">
+      <div class="subsectionsbuttons">
         <button onclick="showAddServices()">Add Services</button>
         <button onclick="showManageServices()">Manage Services</button>
         <button onclick="showNotactiveServices()">Currently Offline Services</button>
@@ -367,12 +348,7 @@
       </div>
     
     </div>
-    
-    <div id="pages" style="display: none">
-      <h2>Pages</h2>
-      <p>Here are all the pages...</p>
-      <!-- Add your pages content here -->
-    </div>
+ 
     <div id="appointments" style="display: none;width: 1200px;">
       <h2>Appointments</h2>
       <div class="searchBarContainer">
@@ -399,26 +375,48 @@
         </tbody>
       </table>
     </div>
-    <div id="subscribers" style="display: none">
-      <h2>Subscribers</h2>
-      <p>Here are all the subscribers...</p>
-      <!-- Add your subscribers content here -->
+
+    <div id="Customers" style="display: none">
+      <h2>Customers</h2>
+      <div class="subsectionsbuttons">
+        <div class="searchBarContainer" style="width: 700px; height: 40px">
+          <div class="searchBar" style="width: 650px; height: 100%;">
+            <input type="text" id="customernameinput" class="searchInput" placeholder="Search by name...">
+          </div>
+        </div>
+        <button onclick="showaddcust()" style="width: 500px;font-size: 17px;">Add Customer</button>
+        <!-- <button onclick="showCustomerList()">Customers List</button> -->
+      </div>
+      <div id="addCustomer" style="display: none">
+        
+      </div>
+     
+      <table style="width: 1200px;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Username</th>
+            <th>Password</th>
+          </tr>
+        </thead>
+        <tbody id="CustomerTableBody">
+          <!-- Dynamic content will be added here -->
+        </tbody>
+      </table>
+  
+
+  
+
     </div>
-    <div id="addCustomer" style="display: none">
-      <h2>Add Customer</h2>
-      <p>Form to add a customer...</p>
-      <!-- Add your add customer content here -->
-    </div>
-    <div id="customerList" style="display: none">
-      <h2>Customer List</h2>
-      <p>Here is the customer list...</p>
-      <!-- Add your customer list content here -->
-    </div>
+  
     <div id="invoices" style="display: none;">
       <h2>Invoices</h2>
       <div class="searchBarContainer" >
         <div class="searchBar" style="width: 1200px;">
-            <input type="text" id="searchAptId" class="searchInput" placeholder="Search by ID...">
+            <input type="text" id="searchAptIdinvoice" class="searchInput" placeholder="Search by ID...">
         </div>
         
       </div>
@@ -437,9 +435,10 @@
         </tbody>
       </table>
     </div>
+
     <div id="employees" style="display: none">
       <h2>Employees</h2>
-      <div class="employee-buttons">
+      <div class="subsectionsbuttons">
         <button onclick="showAddEmployee()">Add Employee</button>
         <button onclick="showManageEmployees()">Manage Employees</button>
       </div>
@@ -487,11 +486,9 @@
     function hideAllSections() {
       document.getElementById("dashboard").style.display = "none";
       document.getElementById("services").style.display = "none";
-      document.getElementById("pages").style.display = "none";
       document.getElementById("appointments").style.display = "none";
-      document.getElementById("subscribers").style.display = "none";
-      document.getElementById("addCustomer").style.display = "none";
-      document.getElementById("customerList").style.display = "none";
+      document.getElementById("Customers").style.display = "none";
+
       document.getElementById("invoices").style.display = "none";
       document.getElementById("employees").style.display="none";
     }
@@ -514,37 +511,32 @@
       showAddServices(); // Show Add Services by default when Services is clicked
     }
 
-    function showPages() {
-      hideServiceSubsections();
+    function showEmployees() {
       hideAllSections();
-      document.getElementById("pages").style.display = "block";
+      document.getElementById("employees").style.display = "block";
+      showAddEmployee(); // Show Add Services by default when Services is clicked
     }
 
     function showAppointments() {
       hideServiceSubsections();
       hideAllSections();
       document.getElementById("appointments").style.display = "block";
-      fetchAppointments();
-      
+      fetchAppointments();      
     }
 
-    function showSubscribers() {
+    function showCustomer() {
       hideServiceSubsections();
       hideAllSections();
-      document.getElementById("subscribers").style.display = "block";
+      document.getElementById("Customers").style.display = "block";
+      customerlist();
+
     }
 
-    function showAddCustomer() {
-      hideServiceSubsections();
-      hideAllSections();
-      document.getElementById("addCustomer").style.display = "block";
-    }
-
-    function showCustomerList() {
-      hideServiceSubsections();
-      hideAllSections();
-      document.getElementById("customerList").style.display = "block";
-    }
+    // function showCustomerList() {
+    //   hideServiceSubsections();
+    //   hideAllSections();
+    //   document.getElementById("customerList").style.display = "block";
+    // }
 
     function showInvoices() {
       hideServiceSubsections();
@@ -554,7 +546,6 @@
     }
 
     function showAddServices() {
-
       hideServiceSubsections();
       document.getElementById("addServices").style.display = "block";
     }
@@ -565,16 +556,14 @@
       fetchServices();
     }
     
-    function showEmployees() {
-      hideAllSections();
-      document.getElementById("employees").style.display = "block";
-    }
     
-    function showEmployees() {
-    hideServiceSubsections();
-    hideAllSections();
-    document.getElementById("employees").style.display = "block";
-    showAddEmployee(); // Show Add Employee by default when Employees is clicked
+    
+    function showAddEmployee() {
+      hideEmployeeSubsections();
+      document.getElementById("addEmployee").style.display = "block";
+      document.getElementById("editEmployee").style.display = "none";
+
+    // Show Add Employee by default when Employees is clicked
   }
 
     function hideEmployeeSubsections() {
@@ -583,9 +572,10 @@
       // document.getElementById("manageEmployees").style.display = "none";
     }
 
-    function showAddEmployee() {
+    function showaddcust() {
       hideEmployeeSubsections();
       document.getElementById("addEmployee").style.display = "block";
+      addCustomer();
     }
 
    function showManageEmployees() {
@@ -829,6 +819,7 @@
 
   async function addEmployee() {
     document.getElementById("editEmployee").style.display = "none";
+    // document.getElementById("manageEmployees").style.display = "none";
     const employee_name = document.getElementById('employee-name').value;
     const employee_number = document.getElementById('employee-phonenumber').value;
     const employee_email = document.getElementById('employee-email').value;
@@ -1042,9 +1033,7 @@
 
     document.getElementById('searchInputId').addEventListener('keyup', async (event) => {
       await fetchAppointments();
-        // if (event.key === 'Enter') {
-        //     await fetchAppointments();
-        // }
+        
     });
 
     document.getElementById('searchInputName').addEventListener('keyup', async (event) => {
@@ -1070,7 +1059,7 @@
 }
   
 async function fetchinvoices() {
-    const Id = document.getElementById('searchAptId').value;
+    const Id = document.getElementById('searchAptIdinvoice').value;
 
     try {
 
@@ -1131,15 +1120,76 @@ async function fetchinvoices() {
         console.error('Error fetching appointments:', error);
     }  
 }
-  document.getElementById('searchAptId').addEventListener('keyup', async (event) => {
+  document.getElementById('searchAptIdinvoice').addEventListener('keyup', async (event) => {
       await fetchinvoices();
-        // if (event.key === 'Enter') {
-        //     await fetchAppointments();
-        // }
     });
+
+    function addCustomer(){
+      const userType = 'admin'; // or 'admin'
+      alert("REDIRECTING TO ADD CUSTOMER PAGE");
+        window.location.href = `../newcustomer.html?userType=${userType}`;
+    }
   
+    async function customerlist(){
   
-  </script>
+      const Name = document.getElementById('customernameinput').value
+
+      try {
+
+        const url = new URL('http://localhost:3000/api/fetchCustomers');
+        url.searchParams.append('Name', Name);
+
+        const response = await fetch(url);
+        const customers = await response.json();
+
+        const tableBody = document.getElementById('CustomerTableBody');
+        tableBody.innerHTML = ''; // Clear existing table rows
+
+            customers.forEach((customer, index) => {
+              
+              const row = document.createElement('tr');
+
+              const cellIndex = document.createElement('td');
+              cellIndex.textContent = customer.ID;
+              row.appendChild(cellIndex);
+
+              const cellName = document.createElement('td');
+              cellName.textContent = customer.Name;
+              row.appendChild(cellName);
+
+              const cellmail = document.createElement('td');
+              cellmail.textContent = customer.Email;
+              row.appendChild(cellmail);
+
+              const cellphone = document.createElement('td');
+              cellphone.textContent = customer.MobileNumber;
+              row.appendChild(cellphone);
+
+              const cellusername = document.createElement('td');
+              cellusername.textContent = customer.username;
+              row.appendChild(cellusername);
+
+              const cellpassword = document.createElement('td');
+              cellpassword.textContent = customer.Password;
+              row.appendChild(cellpassword);
+              
+              
+                tableBody.appendChild(row);
+              
+
+              
+            });
+        
+      } catch (error) {
+          console.error('Error fetching appointments:', error);
+      }
+      
+    }
+    document.getElementById('customernameinput').addEventListener('keyup', async (event) => {
+      await customerlist();
+    });
+ 
+ </script>
 </body>
 </html>
 
