@@ -80,6 +80,7 @@ app.get('/api/barbers', (req, res) => {
 
 app.post('/api/AddAppointments', (req, res) => {
   const { employeeid, customerID,adate, atime, Remarks, selectedServices } = req.body;
+  // console.log(employeeid, customerID,adate, atime, Remarks, selectedServices);
 
 
   // Validate the input
@@ -401,6 +402,130 @@ app.get('/api/fetchCustomers', (req, res) => {
   });
 });
 
+app.get('/api/appointmentscount', (req, res) => {
+  const query = 'SELECT count(*) as apt_count FROM tblappointment';
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      res.json(results[0]); // Send the results directly
+  });
+});
+
+app.get('/api/customerscount', (req, res) => {
+  const query = 'SELECT count(*) as cust_count FROM tblcustomers';
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      res.json(results[0]); // Send the results directly
+  });
+});
+
+app.get('/api/servicescount', (req, res) => {
+  const query = 'SELECT count(*) as ser_count FROM tblservices';
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      res.json(results[0]); // Send the results directly
+  });
+});
+
+app.get('/api/todaysales', (req, res) => {
+
+  const query = `SELECT 
+          SUM(Ser.cost) AS today_sales
+      FROM 
+          tblappointment Apt 
+      JOIN 
+          tblinvoice Inv ON Apt.ID = Inv.AppointmentID  
+      JOIN 
+          tblbilling bill ON Inv.ID = bill.InvoiceID 
+      JOIN 
+          tblservices Ser ON bill.ServiceID = Ser.ID 
+      JOIN 
+          tbltimeslots ts ON Apt.AptTimeID = ts.ID 
+      JOIN
+          tblcustomers cust ON Apt.CustomerID = cust.ID 
+      WHERE 
+          Apt.AptDate = CURDATE();`;
+
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      
+      res.json(results[0]); // Send the results directly
+  });
+});
+
+app.get('/api/lastweeksales', (req, res) => {
+
+  const query = `SELECT 
+          SUM(Ser.cost) AS lastweek_sales
+      FROM 
+          tblappointment Apt 
+      JOIN 
+          tblinvoice Inv ON Apt.ID = Inv.AppointmentID  
+      JOIN 
+          tblbilling bill ON Inv.ID = bill.InvoiceID 
+      JOIN 
+          tblservices Ser ON bill.ServiceID = Ser.ID 
+      JOIN 
+          tbltimeslots ts ON Apt.AptTimeID = ts.ID 
+      JOIN
+          tblcustomers cust ON Apt.CustomerID = cust.ID 
+      WHERE 
+          YEARWEEK(Apt.AptDate, 1) = YEARWEEK(CURDATE(), 1)`;
+
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      
+      res.json(results[0]); // Send the results directly
+  });
+});
+
+app.get('/api/totalsales', (req, res) => {
+
+  const query = `SELECT 
+          SUM(Ser.cost) AS total_sales
+      FROM 
+          tblappointment Apt 
+      JOIN 
+          tblinvoice Inv ON Apt.ID = Inv.AppointmentID  
+      JOIN 
+          tblbilling bill ON Inv.ID = bill.InvoiceID 
+      JOIN 
+          tblservices Ser ON bill.ServiceID = Ser.ID 
+      JOIN 
+          tbltimeslots ts ON Apt.AptTimeID = ts.ID 
+      JOIN
+          tblcustomers cust ON Apt.CustomerID = cust.ID 
+      `;
+
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('API ERROR:', err);
+          res.status(500).json({ error: err.message });
+          return;
+      }
+      
+      res.json(results[0]); // Send the results directly
+  });
+});
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

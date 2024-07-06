@@ -151,19 +151,22 @@
     const atime = document.getElementById('atime').value;
     const employeeid = document.getElementById('employee').value;
     const customerID = document.getElementById('customerID').value;
+
     // const phone = document.getElementById('phone').value;
     const Remarks = '';
-
+   
     try {
         const response = await fetch('http://localhost:3000/api/AddAppointments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
+
             body: JSON.stringify({  employeeid, customerID,adate, atime, Remarks, selectedServices })
         });
 
         const result = await response.json();
+        console.log(response);
 
         const responseMessage = document.getElementById('responseMessage');
         if (response.ok) {

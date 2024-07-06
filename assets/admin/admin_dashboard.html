@@ -249,40 +249,29 @@
     <!-- Default content will be Dashboard -->
     <div class="card-container" id="dashboard">
       <div class="card">
-        <h3>Total Customer</h3>
-        <p>4</p>
+        <h3 >Total Customer</h3>
+        <p id="customerscount"></p>
       </div>
       <div class="card">
         <h3>Total Appointment</h3>
-        <p>9</p>
+        <p id="appointmentscount"></p>
       </div>
+     
       <div class="card">
-        <h3>Accepted Apt</h3>
-        <p>5</p>
-      </div>
-      <div class="card">
-        <h3>Rejected Apt</h3>
-        <p>5</p>
-      </div>
-      <div class="card">
-        <h3>Total Services</h3>
-        <p>17</p>
+        <h3 >Total Services</h3>
+        <p id="servicescount"></p>
       </div>
       <div class="card">
         <h3>Today Sales</h3>
-        <p>0</p>
+        <p id="todaysales">0</p>
       </div>
       <div class="card">
-        <h3>Yesterday Sales</h3>
-        <p>0</p>
-      </div>
-      <div class="card">
-        <h3>Last 7 Days Sales</h3>
-        <p>0</p>
+        <h3 >Last 7 Days Sales</h3>
+        <p id="lastweeksales"></p>
       </div>
       <div class="card">
         <h3>Total Sales</h3>
-        <p>2650</p>
+        <p id="totalsales"></p>
       </div>
     </div>
     <div id="services">
@@ -483,12 +472,95 @@
 
   </div>
   <script>
+    async function fetchAppointmentCount() {
+        try {
+            const response = await fetch('http://localhost:3000/api/appointmentscount');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            const appointmentCountElement = document.getElementById('appointmentscount');
+            appointmentCountElement.textContent = data.apt_count; // Update the text content with the count
+        } catch (error) {
+            console.error('Error fetching appointment count:', error);
+        }
+    }
+
+    async function fetchCustomersCount() {
+        try {
+            const response = await fetch('http://localhost:3000/api/customerscount');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            const appointmentCountElement = document.getElementById('customerscount');
+            appointmentCountElement.textContent = data.cust_count; // Update the text content with the count
+        } catch (error) {
+            console.error('Error fetching appointment count:', error);
+        }
+    }
+
+    async function fetchServicesCount() {
+        try {
+            const response = await fetch('http://localhost:3000/api/servicescount');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            const appointmentCountElement = document.getElementById('servicescount');
+            appointmentCountElement.textContent = data.ser_count; // Update the text content with the count
+        } catch (error) {
+            console.error('Error fetching appointment count:', error);
+        }
+    }
+
+    async function fetchtodaysales() {
+        try {
+            const response = await fetch('http://localhost:3000/api/todaysales');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            const appointmentCountElement = document.getElementById('todaysales');
+            appointmentCountElement.textContent = data.today_sales; // Update the text content with the count
+        } catch (error) {
+            console.error('Error fetching appointment count:', error);
+        }
+    }
+
+    async function lastweeksales() {
+        try {
+            const response = await fetch('http://localhost:3000/api/lastweeksales');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            const appointmentCountElement = document.getElementById('lastweeksales');
+            appointmentCountElement.textContent = data.lastweek_sales; // Update the text content with the count
+        } catch (error) {
+            console.error('Error fetching appointment count:', error);
+        }
+    }
+
+    async function totalsales() {
+        try {
+            const response = await fetch('http://localhost:3000/api/totalsales');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            const appointmentCountElement = document.getElementById('totalsales');
+            appointmentCountElement.textContent = data.total_sales; // Update the text content with the count
+        } catch (error) {
+            console.error('Error fetching appointment count:', error);
+        }
+    }
+    
     function hideAllSections() {
       document.getElementById("dashboard").style.display = "none";
       document.getElementById("services").style.display = "none";
       document.getElementById("appointments").style.display = "none";
       document.getElementById("Customers").style.display = "none";
-
       document.getElementById("invoices").style.display = "none";
       document.getElementById("employees").style.display="none";
     }
@@ -503,6 +575,12 @@
       hideServiceSubsections();
       hideAllSections();
       document.getElementById("dashboard").style.display = "flex";
+      fetchAppointmentCount();
+      fetchCustomersCount();
+      fetchServicesCount();
+      fetchtodaysales();
+      lastweeksales();
+      totalsales();
     }
 
     function showServices() {
@@ -1188,6 +1266,8 @@ async function fetchinvoices() {
     document.getElementById('customernameinput').addEventListener('keyup', async (event) => {
       await customerlist();
     });
+
+    
  
  </script>
 </body>
