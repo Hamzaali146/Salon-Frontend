@@ -62,7 +62,7 @@
         <h2>Add Customer</h2>
         <input type="text" name="name" placeholder="Your Name" required id="cust_name">
         <input type="text" name="email" placeholder="email" required id="cust_email">
-        <input type="text" name="number" placeholder="Your Number" required id="cust_number">
+        <input type="text" name="number" placeholder="Your Number without hyphens" required id="cust_number">
         <input type="text" name="username" placeholder="username" required id="cust_username">
         <input type="text" name="password" placeholder="Password" required id="cust_password">
         <button onclick="addcustomer()">ADD</button>
@@ -72,9 +72,21 @@
     async function addcustomer() {
         const custName = document.getElementById('cust_name').value;
         const custEmail = document.getElementById('cust_email').value;
-        const custNumber = document.getElementById('cust_number').value;
+        let custNumber = document.getElementById('cust_number').value;
         const custUsername = document.getElementById('cust_username').value;
         const custPassword = document.getElementById('cust_password').value;
+
+        if (custNumber) {
+    // Convert custNumber to string and check its length
+        let custNumberStr = custNumber.toString();
+        if (custNumberStr.length != 11) {
+            alert("NUMBER SHOULD BE OF 11 DIGITS");
+            return false;
+        }
+        // Parse it back to an integer if needed
+        custNumber = parseInt(custNumberStr, 10);
+    }
+
         
         try {
         const response = await fetch(`http://localhost:3000/api/fetchusernames?custUsername=${custUsername}`, {
@@ -84,6 +96,8 @@
             }
         });
 
+
+
         const results = await response.json();
 
         if (results.length === 0) {
@@ -91,11 +105,10 @@
             console.log("Username is available, proceeding...");
             // Continue with your form submission or other logic
         } else {
-            // Username exists, prevent further action
-            console.log("Username already exists, cannot proceed.");
             alert("Username already exists, please choose a different one.");
             return false;
         }
+       
     } catch (error) {
         console.error('Error:', error);
     }

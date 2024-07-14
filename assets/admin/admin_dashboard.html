@@ -521,8 +521,12 @@
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            const appointmentCountElement = document.getElementById('todaysales');
+            let appointmentCountElement = document.getElementById('todaysales');
             appointmentCountElement.textContent = data.today_sales; // Update the text content with the count
+            if(data.today_sales === null){
+              appointmentCountElement.textContent = 0;
+            }
+            
         } catch (error) {
             console.error('Error fetching appointment count:', error);
         }
@@ -535,8 +539,11 @@
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            const appointmentCountElement = document.getElementById('lastweeksales');
+            let appointmentCountElement = document.getElementById('lastweeksales');
             appointmentCountElement.textContent = data.lastweek_sales; // Update the text content with the count
+            if(data.today_sales === null){
+              appointmentCountElement.textContent = 0;
+            }
         } catch (error) {
             console.error('Error fetching appointment count:', error);
         }
