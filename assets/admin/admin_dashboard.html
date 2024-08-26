@@ -541,7 +541,7 @@
             const data = await response.json();
             let appointmentCountElement = document.getElementById('lastweeksales');
             appointmentCountElement.textContent = data.lastweek_sales; // Update the text content with the count
-            if(data.today_sales === null){
+            if(data.lastweek_sales === null){
               appointmentCountElement.textContent = 0;
             }
         } catch (error) {
