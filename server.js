@@ -181,6 +181,7 @@ app.post('/api/AddService', (req, res) => {
       return res.status(400).json({ error: 'Service Name, Service Description, and Cost are all required' });
   }
 
+  
   const serviceQuery = 'INSERT INTO tblservices (ServiceName, Description, Cost, IsActive) VALUES (?, ?, ?, true)';
   db.query(serviceQuery, [serviceName, serviceDescription, Cost,service_stat], (err, result) => {
       if (err) {
